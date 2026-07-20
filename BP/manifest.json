@@ -2,22 +2,38 @@
   "format_version": 2,
   "header": {
     "name": "Family Mods",
-    "description": "Our custom Minecraft items — Behavior Pack (item stats, recipes, rules)",
+    "description": "Our custom Minecraft items \u2014 Behavior Pack (item stats, recipes, rules)",
     "uuid": "ae727e13-897f-44f7-adfb-e507e7ae727b",
-    "version": [1, 0, 0],
-    "min_engine_version": [1, 20, 60]
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
   },
   "modules": [
     {
       "type": "data",
       "uuid": "858c2cde-a5ea-47e3-a9a3-60e570b3883b",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        1
+      ]
     }
   ],
   "dependencies": [
     {
       "uuid": "1db81767-00ca-4675-8a05-c9a12a680254",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        1
+      ]
     }
   ]
 }

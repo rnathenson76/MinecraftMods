@@ -2,22 +2,38 @@
   "format_version": 2,
   "header": {
     "name": "Family Mods",
-    "description": "Our custom Minecraft items — Resource Pack (textures, names)",
+    "description": "Our custom Minecraft items \u2014 Resource Pack (textures, names)",
     "uuid": "1db81767-00ca-4675-8a05-c9a12a680254",
-    "version": [1, 0, 0],
-    "min_engine_version": [1, 20, 60]
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
   },
   "modules": [
     {
       "type": "resources",
       "uuid": "52d54298-74c2-4e8b-814f-a08b99b0f58c",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        1
+      ]
     }
   ],
   "dependencies": [
     {
       "uuid": "ae727e13-897f-44f7-adfb-e507e7ae727b",
-      "version": [1, 0, 0]
+      "version": [
+        1,
+        0,
+        1
+      ]
     }
   ]
 }

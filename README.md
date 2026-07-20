@@ -45,6 +45,18 @@ Open `BP/items/obsidian_sword.json` and change the number next to
 in one of these text files — no compiler, no install step beyond re-running
 the script.
 
+## Minecraft version
+
+Built and tested against **Minecraft Bedrock v26 (the 1.26.x add-on format)**.
+The item files use `"format_version": "1.26.10"`. If a future Minecraft update
+changes the item format again and items stop appearing, that version string
+(and the manifests' `min_engine_version`) is the first thing to update.
+
+**Re-installing an update:** the pack version is bumped on each fix (see
+`version` in `BP/manifest.json` / `RP/manifest.json`), so re-importing the new
+`.mcaddon` upgrades it in place. If an old copy ever seems stuck, delete
+"Family Mods" from the pack list on the iPad and import the fresh file.
+
 ## Roadmap
 
 1. ✅ Obsidian Sword — custom item, damage/durability tuning, crafting recipe

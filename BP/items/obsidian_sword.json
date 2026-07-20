@@ -1,5 +1,5 @@
 {
-  "format_version": "1.20.60",
+  "format_version": "1.26.10",
   "minecraft:item": {
     "description": {
       "identifier": "familymods:obsidian_sword",
@@ -30,9 +30,6 @@
             "repair_amount": "query.max_durability * 0.25"
           }
         ]
-      },
-      "minecraft:tags": {
-        "tags": ["minecraft:is_sword", "minecraft:weapon"]
       }
     }
   }
