@@ -60,9 +60,13 @@ changes the item format again and items stop appearing, that version string
 ## Roadmap
 
 1. ✅ Obsidian Sword — custom item, damage/durability tuning, crafting recipe
-2. ⏭️ Rocket-propelled grenade — a throwable item that spawns an explosion.
-   This one's a step up (needs a projectile entity + explosion behavior),
-   next add-on to build.
+2. 🧪 Rocket-Propelled Grenade — throwable launcher item (`familymods:rpg`)
+   that fires a rocket entity (`familymods:rpg_rocket`) which explodes on
+   impact. Kid-chosen settings: explosion power 9, breaks blocks, causes
+   fire, rocket speed 13. Craft with 6 iron + 2 gunpowder + 1 blaze rod.
+   The tunable numbers live in `BP/entities/rpg_rocket.json`
+   (`minecraft:explode` power/breaks_blocks/causes_fire, and the projectile
+   `power` = flight speed). Currently in testing.
 3. Ideas for later: a custom block, a custom mob/pet, a small JavaScript
    script for something interactive.
 

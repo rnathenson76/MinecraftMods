@@ -1,0 +1,60 @@
+{
+  "format_version": "1.26.30",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "familymods:rpg_rocket",
+      "is_spawnable": false,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "familymods:exploded": {
+        "minecraft:explode": {
+          "power": 9,
+          "breaks_blocks": true,
+          "causes_fire": true,
+          "fuse_length": 0,
+          "fuse_lit": true,
+          "max_resistance": 100
+        }
+      }
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "width": 0.25,
+        "height": 0.25
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:projectile": {
+        "power": 13,
+        "gravity": 0.05,
+        "should_bounce": false,
+        "on_hit": {
+          "impact_damage": {
+            "damage": 8,
+            "knockback": true
+          },
+          "definition_event": {
+            "affect_projectile": true,
+            "event_trigger": {
+              "event": "familymods:explode",
+              "target": "self"
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "familymods:explode": {
+        "add": {
+          "component_groups": ["familymods:exploded"]
+        }
+      }
+    }
+  }
+}

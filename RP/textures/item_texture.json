@@ -4,6 +4,9 @@
   "texture_data": {
     "obsidian_sword": {
       "textures": "textures/items/obsidian_sword"
+    },
+    "rpg": {
+      "textures": "textures/items/rpg"
     }
   }
 }
