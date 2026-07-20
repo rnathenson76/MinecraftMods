@@ -1,0 +1,22 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "familymods:obsidian_sword"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "#",
+      "#",
+      "^"
+    ],
+    "key": {
+      "#": { "item": "minecraft:obsidian" },
+      "^": { "item": "minecraft:stick" }
+    },
+    "result": {
+      "item": "familymods:obsidian_sword",
+      "count": 1
+    }
+  }
+}
