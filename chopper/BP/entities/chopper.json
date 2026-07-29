@@ -1,0 +1,43 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "vehicles:chopper",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": ["chopper", "vehicle"]
+      },
+      "minecraft:health": {
+        "value": 60,
+        "max": 60
+      },
+      "minecraft:collision_box": {
+        "width": 1.8,
+        "height": 1.4
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "Ride Chopper",
+        "seats": [
+          {
+            "position": [0.0, 1.1, 0.0],
+            "lock_rider_rotation": 0
+          }
+        ]
+      }
+    }
+  }
+}

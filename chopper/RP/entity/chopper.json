@@ -1,0 +1,22 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "vehicles:chopper",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/chopper" },
+      "geometry": { "default": "geometry.chopper" },
+      "animations": {
+        "rotor_spin": "animation.chopper.rotor"
+      },
+      "scripts": {
+        "animate": ["rotor_spin"]
+      },
+      "spawn_egg": {
+        "base_color": "#7fc4e8",
+        "overlay_color": "#c0392b"
+      },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

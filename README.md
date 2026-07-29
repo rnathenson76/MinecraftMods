@@ -70,6 +70,24 @@ changes the item format again and items stop appearing, that version string
 3. Ideas for later: a custom block, a custom mob/pet, a small JavaScript
    script for something interactive.
 
+## Chopper — a SEPARATE mod (its own pack)
+
+The helicopter lives in its own pack under `chopper/` with its own UUIDs, so it
+installs and updates independently of Family Mods (sword + RPG) and can't
+disturb it.
+
+- Build:  `./scripts/build_chopper.sh`  →  `dist/Chopper.mcaddon`
+- Entity: `vehicles:chopper`; spawn-egg reads **"Chopper"** (sky blue, red spots)
+- **Stage 1 (current):** rideable helicopter, spinning main + tail rotor, sky-blue
+  body with a Minecraft-dog decal on both sides, landing skids. It rests on the
+  ground — no flight yet.
+- Stage 2 = movement/steering. Stage 3 = real up/down/forward flight (adds a
+  little JavaScript via the Script API).
+
+Files: `chopper/BP` (entity, rideable) and `chopper/RP` (model
+`chopper.geo.json`, texture, rotor animation, spawn egg). The tunable rotor
+speed is `animation_length` in `chopper/RP/animations/chopper.animation.json`.
+
 ## Project layout
 
 ```

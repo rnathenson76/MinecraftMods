@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Chopper",
+    "description": "Rideable helicopter (Chopper) — Resource Pack",
+    "uuid": "20e7a20e-7aeb-4180-bc58-66ccc7e70d01",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "9defaab0-d390-4acb-8741-7f5cc70fd2db",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "1a6c1442-778e-4290-ae81-499ddc680d6d",
+      "version": [1, 0, 0]
+    }
+  ]
+}

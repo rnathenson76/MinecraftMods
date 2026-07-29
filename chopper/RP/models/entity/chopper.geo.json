@@ -1,0 +1,77 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.chopper",
+        "texture_width": 128,
+        "texture_height": 128,
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 3,
+        "visible_bounds_offset": [0, 1, 0]
+      },
+      "bones": [
+        {
+          "name": "body",
+          "pivot": [0, 6, 0],
+          "cubes": [
+            { "origin": [-5, 2, -7], "size": [10, 8, 14], "uv": [0, 0] }
+          ]
+        },
+        {
+          "name": "tail_boom",
+          "parent": "body",
+          "pivot": [0, 6, 7],
+          "cubes": [
+            { "origin": [-1.5, 5, 7], "size": [3, 3, 14], "uv": [0, 24] }
+          ]
+        },
+        {
+          "name": "tail_fin",
+          "parent": "tail_boom",
+          "pivot": [0, 7, 20],
+          "cubes": [
+            { "origin": [-0.5, 6, 19], "size": [1, 6, 4], "uv": [0, 44] }
+          ]
+        },
+        {
+          "name": "tail_rotor",
+          "parent": "tail_fin",
+          "pivot": [0, 9, 21],
+          "cubes": [
+            { "origin": [-0.5, 6.5, 20.5], "size": [1, 5, 1], "uv": [74, 96] }
+          ]
+        },
+        {
+          "name": "mast",
+          "parent": "body",
+          "pivot": [0, 10, 0],
+          "cubes": [
+            { "origin": [-1, 10, -1], "size": [2, 4, 2], "uv": [64, 96] }
+          ]
+        },
+        {
+          "name": "main_rotor",
+          "parent": "mast",
+          "pivot": [0, 14, 0],
+          "cubes": [
+            { "origin": [-0.5, 14, -14], "size": [1, 1, 28], "uv": [64, 64] }
+          ]
+        },
+        {
+          "name": "skids",
+          "parent": "body",
+          "pivot": [0, 2, 0],
+          "cubes": [
+            { "origin": [-5, 0, -6], "size": [1, 1, 12], "uv": [90, 96] },
+            { "origin": [4, 0, -6], "size": [1, 1, 12], "uv": [90, 110] },
+            { "origin": [-4.5, 1, -4], "size": [1, 2, 1], "uv": [64, 110] },
+            { "origin": [-4.5, 1, 3], "size": [1, 2, 1], "uv": [68, 110] },
+            { "origin": [3.5, 1, -4], "size": [1, 2, 1], "uv": [72, 110] },
+            { "origin": [3.5, 1, 3], "size": [1, 2, 1], "uv": [76, 110] }
+          ]
+        }
+      ]
+    }
+  ]
+}
