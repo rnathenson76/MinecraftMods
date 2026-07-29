@@ -3,7 +3,7 @@
   "minecraft:client_entity": {
     "description": {
       "identifier": "vehicles:chopper",
-      "materials": { "default": "entity_alphatest" },
+      "materials": { "default": "entity_alphablend" },
       "textures": { "default": "textures/entity/chopper" },
       "geometry": { "default": "geometry.chopper" },
       "animations": {

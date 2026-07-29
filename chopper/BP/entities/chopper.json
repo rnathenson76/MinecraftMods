@@ -16,8 +16,8 @@
         "max": 60
       },
       "minecraft:collision_box": {
-        "width": 1.9,
-        "height": 1.3
+        "width": 5.5,
+        "height": 4.0
       },
       "minecraft:physics": {},
       "minecraft:pushable": {
@@ -33,7 +33,7 @@
         "interact_text": "Ride Chopper",
         "seats": [
           {
-            "position": [0.0, 0.6, 0.0],
+            "position": [0.0, 2.0, 0.0],
             "lock_rider_rotation": 0
           }
         ]
