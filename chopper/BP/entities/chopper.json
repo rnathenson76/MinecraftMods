@@ -19,7 +19,10 @@
         "width": 5.5,
         "height": 4.0
       },
-      "minecraft:physics": {},
+      "minecraft:physics": {
+        "has_gravity": false,
+        "has_collision": true
+      },
       "minecraft:pushable": {
         "is_pushable": false,
         "is_pushable_by_piston": false

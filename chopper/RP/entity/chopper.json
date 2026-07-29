@@ -7,10 +7,11 @@
       "textures": { "default": "textures/entity/chopper" },
       "geometry": { "default": "geometry.chopper" },
       "animations": {
-        "rotor_spin": "animation.chopper.rotor"
+        "rotor_spin": "animation.chopper.rotor",
+        "float": "animation.chopper.float"
       },
       "scripts": {
-        "animate": ["rotor_spin"]
+        "animate": ["rotor_spin", "float"]
       },
       "spawn_egg": {
         "base_color": "#7fc4e8",

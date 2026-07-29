@@ -6,158 +6,119 @@
         "identifier": "geometry.chopper",
         "texture_width": 1024,
         "texture_height": 1024,
-        "visible_bounds_width": 22,
-        "visible_bounds_height": 14,
+        "visible_bounds_width": 24,
+        "visible_bounds_height": 16,
         "visible_bounds_offset": [0, 5, 0]
       },
       "bones": [
         {
-          "name": "cabin_floor",
-          "pivot": [0, 20, 0],
-          "cubes": [
-            { "origin": [-40, 20, -56], "size": [80, 10, 112], "uv": [0, 0] }
-          ]
-        },
-        {
-          "name": "roof",
-          "parent": "cabin_floor",
-          "pivot": [0, 80, 0],
-          "cubes": [
-            { "origin": [-40, 80, -56], "size": [80, 10, 112], "uv": [400, 0] }
-          ]
-        },
-        {
-          "name": "left_lower",
-          "parent": "cabin_floor",
+          "name": "body",
           "pivot": [0, 30, 0],
           "cubes": [
-            { "origin": [-40, 30, -56], "size": [8, 22, 112], "uv": [0, 130] }
+            { "origin": [-32, 20, -52], "size": [64, 8, 100], "uv": [0, 0] },
+            { "origin": [-32, 28, -52], "size": [6, 24, 96], "uv": [0, 0] },
+            { "origin": [26, 28, -52], "size": [6, 24, 96], "uv": [0, 0] },
+            { "origin": [-26, 28, 44], "size": [52, 24, 6], "uv": [0, 0] },
+            { "origin": [-26, 28, -52], "size": [52, 12, 6], "uv": [0, 0] },
+            { "origin": [-28, 68, -44], "size": [56, 8, 78], "uv": [0, 0] },
+            { "origin": [-26, 30, -58], "size": [52, 16, 6], "uv": [0, 0] },
+            { "origin": [-22, 28, -64], "size": [44, 12, 6], "uv": [0, 0] },
+            { "origin": [-16, 26, -70], "size": [32, 10, 6], "uv": [0, 0] },
+            { "origin": [-10, 52, 44], "size": [20, 18, 52], "uv": [0, 0] },
+            { "origin": [-7, 54, 96], "size": [14, 14, 46], "uv": [0, 0] },
+            { "origin": [-26, 56, 124], "size": [52, 4, 16], "uv": [0, 0] }
           ]
         },
         {
-          "name": "right_lower",
-          "parent": "cabin_floor",
-          "pivot": [0, 30, 0],
+          "name": "bevel_left",
+          "parent": "body",
+          "pivot": [-32, 68, -4],
+          "rotation": [0, 0, 45],
           "cubes": [
-            { "origin": [32, 30, -56], "size": [8, 22, 112], "uv": [260, 130] }
+            { "origin": [-35, 65, -44], "size": [5, 5, 78], "uv": [0, 0] }
           ]
         },
         {
-          "name": "back_lower",
-          "parent": "cabin_floor",
-          "pivot": [0, 30, 48],
+          "name": "bevel_right",
+          "parent": "body",
+          "pivot": [32, 68, -4],
+          "rotation": [0, 0, -45],
           "cubes": [
-            { "origin": [-32, 30, 48], "size": [64, 22, 8], "uv": [520, 130] }
-          ]
-        },
-        {
-          "name": "front_lower",
-          "parent": "cabin_floor",
-          "pivot": [0, 30, -56],
-          "cubes": [
-            { "origin": [-32, 30, -56], "size": [64, 22, 8], "uv": [680, 130] }
-          ]
-        },
-        {
-          "name": "left_glass",
-          "parent": "cabin_floor",
-          "pivot": [0, 52, 0],
-          "cubes": [
-            { "origin": [-40, 52, -56], "size": [8, 28, 112], "uv": [0, 300] }
-          ]
-        },
-        {
-          "name": "right_glass",
-          "parent": "cabin_floor",
-          "pivot": [0, 52, 0],
-          "cubes": [
-            { "origin": [32, 52, -56], "size": [8, 28, 112], "uv": [0, 300] }
-          ]
-        },
-        {
-          "name": "back_glass",
-          "parent": "cabin_floor",
-          "pivot": [0, 52, 48],
-          "cubes": [
-            { "origin": [-32, 52, 48], "size": [64, 28, 8], "uv": [0, 300] }
+            { "origin": [30, 65, -44], "size": [5, 5, 78], "uv": [0, 0] }
           ]
         },
         {
           "name": "windshield",
-          "parent": "cabin_floor",
-          "pivot": [0, 52, -56],
-          "rotation": [-18, 0, 0],
+          "parent": "body",
+          "pivot": [0, 40, -52],
+          "rotation": [-38, 0, 0],
           "cubes": [
-            { "origin": [-32, 52, -57], "size": [64, 28, 2], "uv": [0, 300] }
+            { "origin": [-26, 40, -53], "size": [52, 36, 2], "uv": [0, 300] }
           ]
         },
         {
-          "name": "dog_left",
-          "parent": "cabin_floor",
-          "pivot": [-40, 39, -2],
+          "name": "glass",
+          "parent": "body",
+          "pivot": [0, 52, 0],
           "cubes": [
-            { "origin": [-41, 34, -8], "size": [1, 10, 12], "uv": [600, 300] }
+            { "origin": [-32, 52, -44], "size": [6, 16, 88], "uv": [0, 300] },
+            { "origin": [26, 52, -44], "size": [6, 16, 88], "uv": [0, 300] },
+            { "origin": [-26, 52, 44], "size": [52, 16, 6], "uv": [0, 300] }
           ]
         },
         {
-          "name": "dog_right",
-          "parent": "cabin_floor",
-          "pivot": [40, 39, -2],
+          "name": "tail_fin",
+          "parent": "body",
+          "pivot": [0, 56, 140],
+          "rotation": [18, 0, 0],
           "cubes": [
-            { "origin": [40, 34, -8], "size": [1, 10, 12], "uv": [640, 300] }
+            { "origin": [-4, 56, 132], "size": [8, 44, 18], "uv": [0, 0] }
           ]
         },
         {
           "name": "mast",
-          "parent": "cabin_floor",
-          "pivot": [0, 90, 0],
+          "parent": "body",
+          "pivot": [0, 76, 0],
           "cubes": [
-            { "origin": [-6, 90, -6], "size": [12, 26, 12], "uv": [0, 720] }
+            { "origin": [-7, 76, -8], "size": [14, 22, 16], "uv": [0, 512] }
           ]
         },
         {
           "name": "main_rotor",
           "parent": "mast",
-          "pivot": [0, 116, 0],
+          "pivot": [0, 98, -2],
           "cubes": [
-            { "origin": [-6, 116, -96], "size": [12, 12, 192], "uv": [0, 512] }
-          ]
-        },
-        {
-          "name": "tail_boom",
-          "parent": "cabin_floor",
-          "pivot": [0, 64, 56],
-          "cubes": [
-            { "origin": [-10, 54, 56], "size": [20, 20, 80], "uv": [780, 0] }
-          ]
-        },
-        {
-          "name": "tail_fin",
-          "parent": "tail_boom",
-          "pivot": [0, 74, 137],
-          "cubes": [
-            { "origin": [-5, 74, 128], "size": [10, 40, 18], "uv": [780, 110] }
+            { "origin": [-7, 98, -104], "size": [14, 10, 200], "uv": [0, 512] }
           ]
         },
         {
           "name": "tail_rotor",
           "parent": "tail_fin",
-          "pivot": [0, 94, 137],
+          "pivot": [0, 92, 150],
           "cubes": [
-            { "origin": [-3, 74, 134], "size": [6, 40, 6], "uv": [60, 720] }
+            { "origin": [-3, 72, 147], "size": [6, 44, 6], "uv": [0, 512] }
           ]
         },
         {
           "name": "skids",
-          "parent": "cabin_floor",
+          "parent": "body",
           "pivot": [0, 0, 0],
           "cubes": [
-            { "origin": [-44, 0, -44], "size": [10, 10, 88], "uv": [100, 720] },
-            { "origin": [34, 0, -44], "size": [10, 10, 88], "uv": [300, 720] },
-            { "origin": [-40, 10, -36], "size": [10, 20, 10], "uv": [500, 720] },
-            { "origin": [-40, 10, 26], "size": [10, 20, 10], "uv": [540, 720] },
-            { "origin": [30, 10, -36], "size": [10, 20, 10], "uv": [580, 720] },
-            { "origin": [30, 10, 26], "size": [10, 20, 10], "uv": [620, 720] }
+            { "origin": [-40, 0, -40], "size": [8, 8, 88], "uv": [0, 512] },
+            { "origin": [32, 0, -40], "size": [8, 8, 88], "uv": [0, 512] },
+            { "origin": [-38, 8, -32], "size": [8, 20, 8], "uv": [0, 512] },
+            { "origin": [-38, 8, 20], "size": [8, 20, 8], "uv": [0, 512] },
+            { "origin": [30, 8, -32], "size": [8, 20, 8], "uv": [0, 512] },
+            { "origin": [30, 8, 20], "size": [8, 20, 8], "uv": [0, 512] }
+          ]
+        },
+        {
+          "name": "decals",
+          "parent": "body",
+          "pivot": [0, 0, 0],
+          "cubes": [
+            { "origin": [-33, 32, -8], "size": [1, 16, 20], "uv": [600, 300] },
+            { "origin": [32, 32, -8], "size": [1, 16, 20], "uv": [660, 300] }
           ]
         }
       ]
