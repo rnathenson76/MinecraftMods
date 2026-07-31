@@ -3,29 +3,20 @@
   "animations": {
     "animation.chopper.rotor": {
       "loop": true,
-      "animation_length": 0.4,
+      "animation_length": 0.15,
       "bones": {
         "main_rotor": {
-          "rotation": { "0.0": [0, 0, 0], "0.4": [0, 360, 0] }
+          "rotation": { "0.0": [0, 0, 0], "0.15": [0, 360, 0] }
         },
         "tail_rotor": {
-          "rotation": { "0.0": [0, 0, 0], "0.4": [360, 0, 0] }
-        }
-      }
-    },
-    "animation.chopper.float": {
-      "loop": true,
-      "animation_length": 3.0,
-      "bones": {
-        "body": {
-          "position": { "0.0": [0, 0, 0], "1.5": [0, 1.5, 0], "3.0": [0, 0, 0] }
+          "rotation": { "0.0": [0, 0, 0], "0.15": [360, 0, 0] }
         }
       }
     },
     "animation.chopper.door_open": {
       "loop": true,
       "bones": {
-        "door": { "rotation": [0, 100, 0] }
+        "door": { "rotation": [0, -105, 0] }
       }
     },
     "animation.chopper.door_closed": {

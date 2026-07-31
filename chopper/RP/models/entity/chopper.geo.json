@@ -35,17 +35,9 @@
         {
           "name": "door",
           "parent": "body",
-          "pivot": [-18, 34, -52],
+          "pivot": [-19, 34, -52],
           "cubes": [
             { "origin": [-20, 24, -52], "size": [2, 20, 42], "uv": [0, 0] }
-          ]
-        },
-        {
-          "name": "chin_turret",
-          "parent": "body",
-          "pivot": [0, 16, -84],
-          "cubes": [
-            { "origin": [-4, 12, -86], "size": [8, 8, 14], "uv": [0, 512] }
           ]
         },
         {
