@@ -16,13 +16,15 @@
     "animation.chopper.door_open": {
       "loop": true,
       "bones": {
-        "door": { "rotation": [0, -105, 0] }
+        "door_left": { "rotation": [0, -105, 0] },
+        "door_right": { "rotation": [0, 105, 0] }
       }
     },
     "animation.chopper.door_closed": {
       "loop": true,
       "bones": {
-        "door": { "rotation": [0, 0, 0] }
+        "door_left": { "rotation": [0, 0, 0] },
+        "door_right": { "rotation": [0, 0, 0] }
       }
     }
   }
