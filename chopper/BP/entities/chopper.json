@@ -15,9 +15,12 @@
         "value": 60,
         "max": 60
       },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/chopper.json"
+      },
       "minecraft:collision_box": {
-        "width": 5.5,
-        "height": 4.0
+        "width": 3.6,
+        "height": 5.0
       },
       "minecraft:physics": {
         "has_gravity": false,
@@ -36,7 +39,7 @@
         "interact_text": "Ride Chopper",
         "seats": [
           {
-            "position": [0.0, 2.0, 0.0],
+            "position": [0.0, 2.0, -1.5],
             "lock_rider_rotation": 0
           }
         ]

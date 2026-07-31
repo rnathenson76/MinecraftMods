@@ -8,10 +8,13 @@
       "geometry": { "default": "geometry.chopper" },
       "animations": {
         "rotor_spin": "animation.chopper.rotor",
-        "float": "animation.chopper.float"
+        "float": "animation.chopper.float",
+        "door_open": "animation.chopper.door_open",
+        "door_closed": "animation.chopper.door_closed",
+        "door_controller": "controller.animation.chopper.door"
       },
       "scripts": {
-        "animate": ["rotor_spin", "float"]
+        "animate": ["rotor_spin", "float", "door_controller"]
       },
       "spawn_egg": {
         "base_color": "#7fc4e8",
