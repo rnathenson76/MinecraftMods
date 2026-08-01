@@ -2,29 +2,49 @@
   "format_version": 2,
   "header": {
     "name": "Chopper",
-    "description": "Rideable helicopter (Chopper) — Behavior Pack",
+    "description": "Rideable helicopter (Chopper) \u2014 Behavior Pack",
     "uuid": "1a6c1442-778e-4290-ae81-499ddc680d6d",
-    "version": [1, 0, 7],
-    "min_engine_version": [1, 21, 0]
+    "version": [
+      1,
+      0,
+      8
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
   },
   "modules": [
     {
       "type": "data",
       "uuid": "a4ee2a22-b11e-4c8f-9935-f136d8028e9f",
-      "version": [1, 0, 7]
+      "version": [
+        1,
+        0,
+        8
+      ]
     },
     {
       "type": "script",
       "language": "javascript",
       "uuid": "e83c711a-0db7-46bf-bc9e-357b92586de2",
-      "version": [1, 0, 0],
+      "version": [
+        1,
+        0,
+        0
+      ],
       "entry": "scripts/main.js"
     }
   ],
   "dependencies": [
     {
       "uuid": "20e7a20e-7aeb-4180-bc58-66ccc7e70d01",
-      "version": [1, 0, 7]
+      "version": [
+        1,
+        0,
+        8
+      ]
     },
     {
       "module_name": "@minecraft/server",
