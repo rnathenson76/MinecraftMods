@@ -88,6 +88,54 @@ Files: `chopper/BP` (entity, rideable) and `chopper/RP` (model
 `chopper.geo.json`, texture, rotor animation, spawn egg). The tunable rotor
 speed is `animation_length` in `chopper/RP/animations/chopper.animation.json`.
 
+## Unfun — a SEPARATE mod (its own pack)
+
+A recreation of EightSidedSquare's **"Unfun"** joke mod, living in its own pack
+under `unfun/` with its own UUIDs — completely independent of Family Mods and
+the Chopper, so it installs and updates on its own and can't disturb them.
+
+**The idea:** the moment you spawn, *everything is nerfed* — you move slow, dig
+slow, and hit like a wet noodle. You earn your abilities back by grinding four
+skill bars, always shown on screen above the hotbar:
+
+| Bar | Fill it by… | Leveling it up does… |
+|-----|-------------|----------------------|
+| **Mining**   | breaking blocks (ores give more, leaves/grass give less) | eases **Mining Fatigue**, then grants **Haste** |
+| **Building** | placing blocks | eases **Slowness**, then grants **Speed** |
+| **Crafting** | crafting items | eases **Weakness**, then grants **Strength** |
+| **Smelting** | smelting items in a furnace/blast furnace/smoker | grants **Resistance**, then **Regeneration** |
+
+Each bar fills as you do that activity; fill it and the skill **levels up** (up
+to Lv 15), its nerf eases, and past a few levels it flips into a real buff.
+
+- Build:  `./scripts/build_unfun.sh`  →  `dist/Unfun.mcaddon`
+- **Turn on scripts:** Unfun runs on the Script API, so in the world's settings
+  the **"Additional Modding Capabilities" / Beta APIs** experiment must be ON
+  (and both Unfun packs — Behavior + Resource — active for the world).
+- **Chat commands** (type in chat): `!unfun help`, `!unfun reset` (start over),
+  `!unfun max` (max every skill — handy for testing).
+
+**How each bar is detected** (Bedrock only gives clean events for two of the
+four, so the other two use reliable stand-ins — this is the first thing to look
+at if a bar isn't filling):
+
+- *Mining* and *Building* use the real `playerBreakBlock` / `playerPlaceBlock`
+  events — exact.
+- *Crafting* has no Bedrock event, so the script watches your inventory: when
+  ingredients go **down** and a product appears **up** in the same instant,
+  that's a craft. (It pauses briefly right after mining/placing so a fresh drop
+  isn't mistaken for one.)
+- *Smelting* has no event either, so the script remembers each furnace you open
+  and watches its **output slot** — when the result count climbs, that many
+  items just smelted.
+
+**Tuning:** every fun number (XP per action, the leveling curve, and which
+effects each skill grants at each level) lives in the `CONFIG` block at the top
+of `unfun/BP/scripts/main.js`.
+
+Files: `unfun/BP` (manifest + `scripts/main.js`) and `unfun/RP` (manifest +
+pack icon). No custom items or textures — it's all script-driven.
+
 ## Project layout
 
 ```

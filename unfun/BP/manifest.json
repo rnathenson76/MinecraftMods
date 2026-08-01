@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Unfun",
+    "description": "Unfun — everything's nerfed. Grind Mining / Building / Crafting / Smelting bars to earn it back. (Behavior Pack)",
+    "uuid": "bac09fe9-64ad-4d71-a1d1-42a4d0a52f4f",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "5e56bdb1-e694-4d0f-9bc0-dfcd7b100041",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "909e1ba5-3aa8-4ce3-8412-f94f4966bfdd",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "31c7795d-dd1e-4214-b8e3-9399984e0037",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.0.0"
+    }
+  ]
+}
