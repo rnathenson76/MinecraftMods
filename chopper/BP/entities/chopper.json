@@ -5,7 +5,14 @@
       "identifier": "vehicles:chopper",
       "is_spawnable": true,
       "is_summonable": true,
-      "is_experimental": false
+      "is_experimental": false,
+      "properties": {
+        "vehicles:doors_open": {
+          "type": "bool",
+          "default": true,
+          "client_sync": true
+        }
+      }
     },
     "components": {
       "minecraft:type_family": {
