@@ -18,13 +18,16 @@ const CHOPPER = "vehicles:chopper";
 const DOOR_SWITCH = "vehicles:doors_open";
 const DIMENSIONS = ["overworld", "nether", "the_end"];
 
-// ---- Sink feel (tweak this!) ----
-const SINK_PER_TICK = 0.13; // blocks it drops each tick when you're not climbing
+// ---- Sink feel (tweak these!) ----
+const SINK_PUSH = 0.09; // how hard it drifts down when you're not holding jump
+const MAX_SINK  = 0.40; // fastest it will sink (blocks per tick)
 
 system.runInterval(() => {
   const occupied = new Set();
 
   // -------- PILOTS: sink when not holding jump --------
+  // NOTE: we nudge the velocity down with applyImpulse (never teleport) so the
+  // helicopter's facing/steering is left completely alone.
   for (const player of world.getAllPlayers()) {
     const chopper = player.getComponent("minecraft:riding")?.entityRidingOn;
     if (!chopper || chopper.typeId !== CHOPPER) continue;
@@ -34,21 +37,13 @@ system.runInterval(() => {
       const holdingJump =
         player.inputInfo.getButtonState(InputButton.Jump) === ButtonState.Pressed;
       if (!holdingJump) {
-        const loc = chopper.location;
-        const targetY = loc.y - SINK_PER_TICK;
-        // don't sink into solid ground / water — rest on top of it
-        const below = chopper.dimension.getBlock({
-          x: Math.floor(loc.x), y: Math.floor(targetY), z: Math.floor(loc.z)
-        });
-        if (below && below.isAir) {
-          chopper.teleport(
-            { x: loc.x, y: targetY, z: loc.z },
-            { keepVelocity: true } // keep flying smoothly sideways while sinking
-          );
+        const v = chopper.getVelocity();
+        if (v.y > -MAX_SINK) {
+          chopper.applyImpulse({ x: 0, y: -SINK_PUSH, z: 0 });
         }
       }
     } catch (e) {
-      // input/lookup hiccup — doors still work
+      // input hiccup — doors still work
     }
   }
 
