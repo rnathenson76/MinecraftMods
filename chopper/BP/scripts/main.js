@@ -1,18 +1,15 @@
 // ============================================================
-//  CHOPPER  —  doors + FLIGHT   (Adam's scripts)
+//  CHOPPER  —  doors + descend   (Adam's script)
 // ============================================================
 //
-// Part 1 (doors): a Chopper can't tell on its own when someone climbs in, so
-//   we check every tick: if a player is riding -> CLOSE the doors; empty -> OPEN.
+// Flying is now handled by the helicopter's built-in flight components:
+//   - move joystick  = fly forward / back / strafe on the flat plane
+//   - jump button    = rise straight up (and it no longer kicks you out!)
+//   - let go         = hover (no gravity)
 //
-// Part 2 (flight): while you're the pilot, the Chopper flies WHERE YOU LOOK.
-//   - Push the move joystick FORWARD -> fly the way you're looking
-//     (look up to climb, look down to dive).
-//   - Joystick LEFT / RIGHT -> slide sideways.
-//   - JUMP button -> lift straight up.
-//   - Let go of everything -> it hovers in place.
-//
-// The three SPEED numbers below are the fun ones to experiment with.
+// This script adds the two things those components don't do on their own:
+//   1) DOORS: closed while someone is riding, open when empty.
+//   2) DESCEND: hold the sneak / down control to sink back down.
 
 import { world, system, InputButton, ButtonState } from "@minecraft/server";
 
@@ -20,53 +17,30 @@ const CHOPPER = "vehicles:chopper";
 const DOOR_SWITCH = "vehicles:doors_open";
 const DIMENSIONS = ["overworld", "nether", "the_end"];
 
-// ---- Flight feel (tweak these!) ----
-const FORWARD_SPEED = 0.55; // blocks per tick flying forward (higher = faster)
-const STRAFE_SPEED  = 0.35; // blocks per tick sliding sideways
-const LIFT_SPEED    = 0.45; // blocks per tick rising when you hold jump
+// ---- Descend feel (tweak these!) ----
+const DESCEND_PUSH = 0.18; // how hard the down control pushes each tick
+const MAX_DESCEND  = 0.45; // fastest it will sink (blocks per tick)
 
 system.runInterval(() => {
   const occupied = new Set();
 
-  // -------- PILOTS: fly their Chopper --------
+  // -------- PILOTS: let them sink with the down control --------
   for (const player of world.getAllPlayers()) {
     const chopper = player.getComponent("minecraft:riding")?.entityRidingOn;
     if (!chopper || chopper.typeId !== CHOPPER) continue;
     occupied.add(chopper.id);
 
     try {
-      const move = player.inputInfo.getMovementVector(); // {x: strafe, y: forward}
-      const view = player.getViewDirection();            // 3D look direction
-      const rot  = player.getRotation();                 // {x: pitch, y: yaw}
-
-      // Fly in the direction you're looking, scaled by the forward stick.
-      let vx = view.x * move.y * FORWARD_SPEED;
-      let vy = view.y * move.y * FORWARD_SPEED;
-      let vz = view.z * move.y * FORWARD_SPEED;
-
-      // Strafe: a horizontal vector pointing to the pilot's right.
-      const rx = -view.z, rz = view.x;
-      const rlen = Math.hypot(rx, rz) || 1;
-      vx += (rx / rlen) * move.x * STRAFE_SPEED;
-      vz += (rz / rlen) * move.x * STRAFE_SPEED;
-
-      // Jump button = rise straight up.
-      if (player.inputInfo.getButtonState(InputButton.Jump) === ButtonState.Pressed) {
-        vy += LIFT_SPEED;
-      }
-
-      // Move the Chopper, but don't bury its base inside a solid block.
-      const loc = chopper.location;
-      const dest = { x: loc.x + vx, y: loc.y + vy, z: loc.z + vz };
-      const b = chopper.dimension.getBlock({
-        x: Math.floor(dest.x), y: Math.floor(dest.y), z: Math.floor(dest.z)
-      });
-      const blocked = b && !b.isAir && !b.isLiquid;
-      if (!blocked && (vx || vy || vz)) {
-        chopper.teleport(dest, { rotation: { x: 0, y: rot.y }, keepVelocity: false });
+      const holdingDown =
+        player.inputInfo.getButtonState(InputButton.Sneak) === ButtonState.Pressed;
+      if (holdingDown) {
+        const v = chopper.getVelocity();
+        if (v.y > -MAX_DESCEND) {
+          chopper.applyImpulse({ x: 0, y: -DESCEND_PUSH, z: 0 });
+        }
       }
     } catch (e) {
-      // input API hiccup — doors still work; just skip flying this tick
+      // input hiccup — doors still work
     }
   }
 
@@ -84,4 +58,4 @@ system.runInterval(() => {
       } catch (e) { /* not ready yet */ }
     }
   }
-}, 1); // every tick, so flight is smooth
+}, 1);

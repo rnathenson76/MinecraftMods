@@ -37,8 +37,26 @@
         "is_pushable": false,
         "is_pushable_by_piston": false
       },
-      "minecraft:knockback_resistance": {
-        "value": 1.0
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:flying_speed": {
+        "value": 0.14
+      },
+      "minecraft:input_air_controlled": {
+        "strafe_speed_modifier": 1.0,
+        "backwards_movement_modifier": 0.6
+      },
+      "minecraft:vertical_movement_action": {
+        "vertical_velocity": 0.5
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": false
+          }
+        ]
       },
       "minecraft:rideable": {
         "seat_count": 1,
@@ -46,7 +64,7 @@
         "interact_text": "Ride Chopper",
         "seats": [
           {
-            "position": [0.0, 1.6, -1.5],
+            "position": [0.0, 1.6, -2.8],
             "lock_rider_rotation": 0
           }
         ]
