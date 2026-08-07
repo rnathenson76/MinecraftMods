@@ -2,14 +2,17 @@
 //  CHOPPER  —  doors + descend   (Adam's script)
 // ============================================================
 //
-// Flying is now handled by the helicopter's built-in flight components:
-//   - move joystick  = fly forward / back / strafe on the flat plane
-//   - jump button    = rise straight up (and it no longer kicks you out!)
-//   - let go         = hover (no gravity)
+// Flying uses the helicopter's built-in flight components:
+//   - move joystick = fly forward / back / strafe on the flat plane
+//   - JUMP (hold)   = rise straight up
+//   - let go of jump = gently sink back down   <-- handled here
 //
-// This script adds the two things those components don't do on their own:
+// (On touch there's no separate "down" button while riding — that button is
+//  the get-out button — so "let go of jump to sink" is the safe way down.)
+//
+// This script does two jobs:
 //   1) DOORS: closed while someone is riding, open when empty.
-//   2) DESCEND: hold the sneak / down control to sink back down.
+//   2) SINK: while riding and NOT holding jump, drift gently downward.
 
 import { world, system, InputButton, ButtonState } from "@minecraft/server";
 
@@ -17,26 +20,26 @@ const CHOPPER = "vehicles:chopper";
 const DOOR_SWITCH = "vehicles:doors_open";
 const DIMENSIONS = ["overworld", "nether", "the_end"];
 
-// ---- Descend feel (tweak these!) ----
-const DESCEND_PUSH = 0.18; // how hard the down control pushes each tick
-const MAX_DESCEND  = 0.45; // fastest it will sink (blocks per tick)
+// ---- Sink feel (tweak these!) ----
+const SINK_PUSH = 0.05; // how hard it drifts down when you're not holding jump
+const SINK_MAX  = 0.22; // fastest gentle sink (blocks per tick)
 
 system.runInterval(() => {
   const occupied = new Set();
 
-  // -------- PILOTS: let them sink with the down control --------
+  // -------- PILOTS: sink when not holding jump --------
   for (const player of world.getAllPlayers()) {
     const chopper = player.getComponent("minecraft:riding")?.entityRidingOn;
     if (!chopper || chopper.typeId !== CHOPPER) continue;
     occupied.add(chopper.id);
 
     try {
-      const holdingDown =
-        player.inputInfo.getButtonState(InputButton.Sneak) === ButtonState.Pressed;
-      if (holdingDown) {
+      const holdingJump =
+        player.inputInfo.getButtonState(InputButton.Jump) === ButtonState.Pressed;
+      if (!holdingJump) {
         const v = chopper.getVelocity();
-        if (v.y > -MAX_DESCEND) {
-          chopper.applyImpulse({ x: 0, y: -DESCEND_PUSH, z: 0 });
+        if (v.y > -SINK_MAX) {
+          chopper.applyImpulse({ x: 0, y: -SINK_PUSH, z: 0 });
         }
       }
     } catch (e) {
