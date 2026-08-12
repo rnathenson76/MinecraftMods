@@ -58,6 +58,11 @@ system.runInterval(() => {
         if (chopper.getProperty(DOOR_SWITCH) !== shouldBeOpen) {
           chopper.setProperty(DOOR_SWITCH, shouldBeOpen);
         }
+        // Empty + no gravity = a single hit would send it drifting to space.
+        // Hold parked (empty) helicopters still so that can't happen.
+        if (shouldBeOpen) {
+          chopper.clearVelocity();
+        }
       } catch (e) { /* not ready yet */ }
     }
   }
