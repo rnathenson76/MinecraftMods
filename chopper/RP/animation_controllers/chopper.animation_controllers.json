@@ -19,6 +19,22 @@
           ]
         }
       }
+    },
+    "controller.animation.chopper.visibility": {
+      "initial_state": "visible",
+      "states": {
+        "visible": {
+          "transitions": [
+            { "hidden": "!q.property('vehicles:doors_open')" }
+          ]
+        },
+        "hidden": {
+          "animations": ["chopper_hidden"],
+          "transitions": [
+            { "visible": "q.property('vehicles:doors_open')" }
+          ]
+        }
+      }
     }
   }
 }

@@ -10,10 +10,12 @@
         "rotor_spin": "animation.chopper.rotor",
         "door_open": "animation.chopper.door_open",
         "door_closed": "animation.chopper.door_closed",
-        "door_controller": "controller.animation.chopper.door"
+        "door_controller": "controller.animation.chopper.door",
+        "chopper_hidden": "animation.chopper.hidden",
+        "visibility_controller": "controller.animation.chopper.visibility"
       },
       "scripts": {
-        "animate": ["rotor_spin", "door_controller"]
+        "animate": ["rotor_spin", "door_controller", "visibility_controller"]
       },
       "spawn_egg": {
         "base_color": "#7fc4e8",
