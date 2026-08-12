@@ -64,7 +64,7 @@
         "interact_text": "Ride Chopper",
         "seats": [
           {
-            "position": [0.0, 1.6, 2.0],
+            "position": [0.0, 1.6, -1.8],
             "lock_rider_rotation": 0
           }
         ]
