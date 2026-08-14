@@ -19,6 +19,8 @@ const DIMENSIONS = ["overworld", "nether", "the_end"];
 
 // ---- Feel (tweak these!) ----
 const LOOK_DOWN_ANGLE = 40;  // look down past this many degrees to descend
+const CLIMB_PUSH = 0.14;     // how hard it lifts when you hold jump (beats water)
+const MAX_CLIMB  = 0.55;     // fastest climb (blocks per tick)
 const SINK_PUSH = 0.09;      // how hard it sinks when you look down
 const MAX_SINK  = 0.40;      // fastest sink (blocks per tick)
 const HOVER_DAMP = 0.5;      // how strongly it cancels drift to hold altitude
@@ -39,7 +41,10 @@ system.runInterval(() => {
       const v = chopper.getVelocity();
 
       if (holdingJump) {
-        // built-in climb handles going up — nothing to do here
+        // climb — actively push up so it also rises out of water
+        if (v.y < MAX_CLIMB) {
+          chopper.applyImpulse({ x: 0, y: CLIMB_PUSH, z: 0 });
+        }
       } else if (pitch > LOOK_DOWN_ANGLE) {
         // looking down -> descend
         if (v.y > -MAX_SINK) {
