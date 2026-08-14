@@ -30,7 +30,7 @@
     "animation.chopper.hidden": {
       "loop": true,
       "bones": {
-        "body": { "scale": 0 }
+        "hull": { "scale": 0 }
       }
     }
   }

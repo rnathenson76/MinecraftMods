@@ -12,18 +12,36 @@
       },
       "bones": [
         {
-          "name": "body",
+          "name": "keep",
           "pivot": [0, 24, 0],
           "cubes": [
             { "origin": [-18, 16, -52], "size": [36, 8, 96], "uv": [0, 0] },
+            { "origin": [17, 24, -52], "size": [3, 16, 44], "uv": [0, 0] },
+            { "origin": [-20, 24, -52], "size": [3, 16, 44], "uv": [0, 0] }
+          ]
+        },
+        {
+          "name": "skids",
+          "pivot": [0, 0, 0],
+          "cubes": [
+            { "origin": [-24, 0, -36], "size": [6, 6, 80], "uv": [0, 512] },
+            { "origin": [18, 0, -36], "size": [6, 6, 80], "uv": [0, 512] },
+            { "origin": [-22, 6, -24], "size": [6, 18, 6], "uv": [0, 512] },
+            { "origin": [-22, 6, 24], "size": [6, 18, 6], "uv": [0, 512] },
+            { "origin": [16, 6, -24], "size": [6, 18, 6], "uv": [0, 512] },
+            { "origin": [16, 6, 24], "size": [6, 18, 6], "uv": [0, 512] }
+          ]
+        },
+        {
+          "name": "hull",
+          "pivot": [0, 24, 0],
+          "cubes": [
             { "origin": [-18, 24, -8], "size": [36, 26, 60], "uv": [0, 0] },
             { "origin": [-14, 50, -4], "size": [28, 10, 44], "uv": [0, 0] },
             { "origin": [-16, 20, -64], "size": [32, 14, 12], "uv": [0, 0] },
             { "origin": [-12, 19, -76], "size": [24, 10, 12], "uv": [0, 0] },
             { "origin": [-8, 19, -88], "size": [16, 8, 12], "uv": [0, 0] },
             { "origin": [-5, 19, -96], "size": [10, 6, 8], "uv": [0, 0] },
-            { "origin": [17, 24, -52], "size": [3, 16, 44], "uv": [0, 0] },
-            { "origin": [-20, 24, -52], "size": [3, 16, 44], "uv": [0, 0] },
             { "origin": [-16, 24, -52], "size": [32, 4, 4], "uv": [0, 0] },
             { "origin": [-7, 30, 52], "size": [14, 12, 50], "uv": [0, 0] },
             { "origin": [-5, 32, 102], "size": [10, 9, 48], "uv": [0, 0] },
@@ -34,24 +52,8 @@
           ]
         },
         {
-          "name": "door_left",
-          "parent": "body",
-          "pivot": [-20, 34, -44],
-          "cubes": [
-            { "origin": [-21, 26, -44], "size": [1, 16, 18], "uv": [0, 0] }
-          ]
-        },
-        {
-          "name": "door_right",
-          "parent": "body",
-          "pivot": [20, 34, -44],
-          "cubes": [
-            { "origin": [20, 26, -44], "size": [1, 16, 18], "uv": [0, 0] }
-          ]
-        },
-        {
           "name": "glass",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 40, 0],
           "cubes": [
             { "origin": [-20, 40, -52], "size": [3, 14, 44], "uv": [0, 300] },
@@ -61,7 +63,7 @@
         },
         {
           "name": "windshield",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 28, -52],
           "rotation": [-54, 0, 0],
           "cubes": [
@@ -70,7 +72,7 @@
         },
         {
           "name": "canopy_rear",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 54, -8],
           "rotation": [40, 0, 0],
           "cubes": [
@@ -79,7 +81,7 @@
         },
         {
           "name": "tail_fin",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 38, 178],
           "rotation": [22, 0, 0],
           "cubes": [
@@ -88,7 +90,7 @@
         },
         {
           "name": "mast",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 60, -2],
           "cubes": [
             { "origin": [-6, 60, -8], "size": [12, 14, 12], "uv": [0, 512] }
@@ -111,21 +113,24 @@
           ]
         },
         {
-          "name": "skids",
-          "parent": "body",
-          "pivot": [0, 0, 0],
+          "name": "door_left",
+          "parent": "hull",
+          "pivot": [-20, 34, -44],
           "cubes": [
-            { "origin": [-24, 0, -36], "size": [6, 6, 80], "uv": [0, 512] },
-            { "origin": [18, 0, -36], "size": [6, 6, 80], "uv": [0, 512] },
-            { "origin": [-22, 6, -24], "size": [6, 18, 6], "uv": [0, 512] },
-            { "origin": [-22, 6, 24], "size": [6, 18, 6], "uv": [0, 512] },
-            { "origin": [16, 6, -24], "size": [6, 18, 6], "uv": [0, 512] },
-            { "origin": [16, 6, 24], "size": [6, 18, 6], "uv": [0, 512] }
+            { "origin": [-21, 26, -44], "size": [1, 16, 18], "uv": [0, 0] }
+          ]
+        },
+        {
+          "name": "door_right",
+          "parent": "hull",
+          "pivot": [20, 34, -44],
+          "cubes": [
+            { "origin": [20, 26, -44], "size": [1, 16, 18], "uv": [0, 0] }
           ]
         },
         {
           "name": "decals",
-          "parent": "body",
+          "parent": "hull",
           "pivot": [0, 0, 0],
           "cubes": [
             { "origin": [-19, 28, 16], "size": [1, 16, 20], "uv": [600, 300] },
