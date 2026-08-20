@@ -12,9 +12,12 @@ Pack (`RP/`, the textures/names), zipped up and imported into Minecraft.
 - **Emerald Sword** (`familymods:emerald_sword`) — Adam's magic sword.
   Hits living things for **20 hearts** (`minecraft:damage` = 40; 2 damage =
   1 heart). The magic trick: the moment you **hold** it, whatever armour you're
-  wearing pops off into your inventory and a full set of **Emerald Armour + an
-  Emerald Shield** appears on you. Put the sword away and the emerald gear
-  vanishes — your old armour is still in your bags to put back on. Craft it
+  wearing (and your off-hand item) is set aside and a full set of **Emerald
+  Armour + an Emerald Shield** appears on you — and the emerald gear *and the
+  sword itself* get every enchantment they can take, each at max level. Put the
+  sword away and the emerald gear vanishes and your **exact old armour goes
+  right back on**. Your old gear is remembered on you (it survives a relog) and
+  only ever moved back — never copied — so nothing duplicates. Craft the sword
   with 2 emerald + 1 stick.
 
 ## How to build it into something Minecraft can open
@@ -75,10 +78,11 @@ changes the item format again and items stop appearing, that version string
    (`minecraft:explode` power/breaks_blocks/causes_fire, and the projectile
    `power` = flight speed). Currently in testing.
 3. ✅ Emerald Sword — 20-heart hit, plus a Script-API "hold it and your armour
-   turns to emerald" swap. Damage is one number in
-   `BP/items/emerald_sword.json` (`minecraft:damage`). The armour-swap logic is
-   `BP/scripts/main.js`. The armour's strength is the `protection` number in
-   each `BP/items/emerald_*.json`. The green look is drawn by
+   turns to (fully enchanted) emerald, put it away and your own armour comes
+   back" swap. Damage is one number in `BP/items/emerald_sword.json`
+   (`minecraft:damage`). The swap + enchant + restore logic is all in
+   `BP/scripts/main.js`. The armour's base strength is the `protection` number
+   in each `BP/items/emerald_*.json`. The green look is drawn by
    `scripts/gen_emerald_textures.py` (re-run it, then rebuild, to change colours
    or shapes).
    - **Heads-up on the shield:** Minecraft only lets the *real* vanilla shield
