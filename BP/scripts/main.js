@@ -31,10 +31,17 @@ const PREFIX = "familymods:emerald_";     // marks our conjured gear
 const FLAG = "familymods:emeralded";      // per-player "armour is swapped" flag
 const SAVED = "familymods:saved_armor";   // per-player stash of the old armour
 
-// Enchantments we deliberately skip. Curse of Binding would glue the emerald
-// armour on and stop us swapping it back; Curse of Vanishing just makes gear
-// disappear on death. Neither is fun here.
-const SKIP_ENCHANTS = new Set(["minecraft:binding", "minecraft:vanishing"]);
+// Enchantments we deliberately skip: the curses. Curse of Binding would glue
+// the emerald armour on and stop us swapping it back; Curse of Vanishing makes
+// gear disappear on death. Enchantment ids can come through with or without the
+// "minecraft:" namespace, so we compare on the bare name and also catch
+// anything that calls itself a curse.
+const SKIP_ENCHANTS = new Set(["binding", "vanishing"]);
+
+function isCurse(type) {
+  const name = String(type.id).replace(/^minecraft:/, "").toLowerCase();
+  return SKIP_ENCHANTS.has(name) || name.includes("curse");
+}
 
 // Which slot gets which conjured piece (in slot order).
 const CONJURED = [
@@ -59,7 +66,7 @@ function maxEnchant(item) {
   const ench = item?.getComponent("minecraft:enchantable");
   if (!ench) return item;
   for (const type of EnchantmentTypes.getAll()) {
-    if (SKIP_ENCHANTS.has(type.id)) continue;
+    if (isCurse(type)) continue;
     const entry = { type, level: type.maxLevel };
     try {
       if (ench.canAddEnchantment(entry)) ench.addEnchantment(entry);

@@ -84,27 +84,33 @@ def from_grid(grid, mapping):
 # ---------------------------------------------------------------------------
 
 def sword_icon():
-    # Upright emerald blade with a brown handle.
-    g = [
-        "       oo       ",
-        "      olgo      ",
-        "      oglo      ",
-        "      olgo      ",
-        "      oglo      ",
-        "      olgo      ",
-        "      oglo      ",
-        "      olgo      ",
-        "      oglo      ",
-        "      oglo      ",
-        "    oodmmdoo    ",
-        "      okko      ",
-        "      obbo      ",
-        "      okko      ",
-        "      obbo      ",
-        "       oo       ",
-    ]
-    return from_grid(g, {" ": T, "o": O, "d": D, "m": M, "g": G,
-                         "l": L, "b": B, "k": K})
+    # Classic diagonal Minecraft-sword silhouette: blade from the lower-left
+    # guard up to a tip at the top-right, a crossguard, and a brown handle.
+    cv = canvas(16, 16)
+    # Blade: a 45-degree band, bright centre with a lit upper edge and a
+    # shaded lower edge, running from the guard (4,11) to the tip (13,2).
+    for i in range(10):
+        x, y = 4 + i, 11 - i
+        px(cv, x - 1, y - 1, L)  # upper-left highlight
+        px(cv, x, y, G)          # bright centre
+        px(cv, x + 1, y + 1, D)  # lower-right shadow
+    # Crossguard: a short bar across the base of the blade.
+    for (gx, gy) in [(2, 11), (3, 10), (3, 12), (4, 11), (5, 12), (6, 13)]:
+        px(cv, gx, gy, M)
+    # Handle + pommel, down to the lower-left corner.
+    for (hx, hy) in [(3, 12), (2, 13), (2, 12)]:
+        px(cv, hx, hy, B)
+    for (hx, hy) in [(1, 14), (1, 13), (0, 15)]:
+        px(cv, hx, hy, K)
+    # Dark outline around the whole shape.
+    filled = [(x, y) for y in range(16) for x in range(16) if cv[y][x] != T]
+    for (x, y) in filled:
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < 16 and 0 <= ny < 16 and cv[ny][nx] == T:
+                    cv[ny][nx] = O
+    return cv
 
 
 def helmet_icon():
