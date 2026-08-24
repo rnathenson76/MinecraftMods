@@ -65,14 +65,10 @@ function isHoldingSword(player) {
 function maxEnchant(item) {
   const ench = item?.getComponent("minecraft:enchantable");
   if (!ench) return item;
-  // Strip any curse already on the item — e.g. a sword enchanted by an older
-  // build before curses were excluded. We only ADD non-curses below, so
-  // without this an existing curse would linger forever.
-  for (const existing of ench.getEnchantments()) {
-    if (isCurse(existing.type)) {
-      try { ench.removeEnchantment(existing.type); } catch (e) { /* ignore */ }
-    }
-  }
+  // Wipe whatever is already on the item first — this clears any curse baked
+  // in by an older build (e.g. a sword still carrying Curse of Vanishing).
+  // We re-apply the full curse-free set right below, so nothing is lost.
+  try { ench.removeAllEnchantments(); } catch (e) { /* ignore */ }
   for (const type of EnchantmentTypes.getAll()) {
     if (isCurse(type)) continue;
     const entry = { type, level: type.maxLevel };

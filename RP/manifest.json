@@ -1,13 +1,13 @@
 {
   "format_version": 2,
   "header": {
-    "name": "Family Mods 1.1.4",
+    "name": "Family Mods 1.1.5",
     "description": "Our custom Minecraft items — Resource Pack (textures, names)",
     "uuid": "1db81767-00ca-4675-8a05-c9a12a680254",
     "version": [
       1,
       1,
-      4
+      5
     ],
     "min_engine_version": [
       1,
@@ -22,7 +22,7 @@
       "version": [
         1,
         1,
-        4
+        5
       ]
     }
   ],
@@ -32,7 +32,7 @@
       "version": [
         1,
         1,
-        4
+        5
       ]
     }
   ]
