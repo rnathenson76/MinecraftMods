@@ -205,9 +205,10 @@ def armor_layer(open_face=False):
             px(cv, x, y, c)
     if open_face:
         # The head's front face maps to x 8-15, y 8-15 in the armour layout.
-        # Clear the lower part of it so the player's face shows (open-face
-        # helmet, no visor); keep the top two rows as a forehead brow band.
-        for y in range(10, 16):
+        # Clear the whole front face so the player's face shows through
+        # (open-face helmet, no visor). Keep only the single top rim row so it
+        # still reads as a helmet sitting on the head.
+        for y in range(9, 16):
             for x in range(8, 16):
                 px(cv, x, y, T)
     return cv
