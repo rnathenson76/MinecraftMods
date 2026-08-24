@@ -65,6 +65,14 @@ function isHoldingSword(player) {
 function maxEnchant(item) {
   const ench = item?.getComponent("minecraft:enchantable");
   if (!ench) return item;
+  // Strip any curse already on the item — e.g. a sword enchanted by an older
+  // build before curses were excluded. We only ADD non-curses below, so
+  // without this an existing curse would linger forever.
+  for (const existing of ench.getEnchantments()) {
+    if (isCurse(existing.type)) {
+      try { ench.removeEnchantment(existing.type); } catch (e) { /* ignore */ }
+    }
+  }
   for (const type of EnchantmentTypes.getAll()) {
     if (isCurse(type)) continue;
     const entry = { type, level: type.maxLevel };

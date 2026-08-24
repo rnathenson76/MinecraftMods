@@ -1,13 +1,13 @@
 {
   "format_version": 2,
   "header": {
-    "name": "Family Mods 1.1.3",
+    "name": "Family Mods 1.1.4",
     "description": "Our custom Minecraft items — Behavior Pack (item stats, recipes, rules)",
     "uuid": "ae727e13-897f-44f7-adfb-e507e7ae727b",
     "version": [
       1,
       1,
-      3
+      4
     ],
     "min_engine_version": [
       1,
@@ -22,7 +22,7 @@
       "version": [
         1,
         1,
-        3
+        4
       ]
     },
     {
@@ -43,7 +43,7 @@
       "version": [
         1,
         1,
-        3
+        4
       ]
     },
     {

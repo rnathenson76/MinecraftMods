@@ -187,7 +187,7 @@ def shield_icon():
 # body part the armour geometry covers shows up solid green.
 # ---------------------------------------------------------------------------
 
-def armor_layer():
+def armor_layer(open_face=False):
     cv = canvas(64, 32)
     for y in range(32):
         for x in range(64):
@@ -203,6 +203,13 @@ def armor_layer():
             if x % 8 == 0 or y % 8 == 0:
                 c = O
             px(cv, x, y, c)
+    if open_face:
+        # The head's front face maps to x 8-15, y 8-15 in the armour layout.
+        # Clear the lower part of it so the player's face shows (open-face
+        # helmet, no visor); keep the top two rows as a forehead brow band.
+        for y in range(10, 16):
+            for x in range(8, 16):
+                px(cv, x, y, T)
     return cv
 
 
@@ -213,7 +220,7 @@ def main():
     write_png(os.path.join(ITEMS_DIR, "emerald_leggings.png"), leggings_icon())
     write_png(os.path.join(ITEMS_DIR, "emerald_boots.png"), boots_icon())
     write_png(os.path.join(ITEMS_DIR, "emerald_shield.png"), shield_icon())
-    write_png(os.path.join(ARMOR_DIR, "emerald_layer_1.png"), armor_layer())
+    write_png(os.path.join(ARMOR_DIR, "emerald_layer_1.png"), armor_layer(open_face=True))
     write_png(os.path.join(ARMOR_DIR, "emerald_layer_2.png"), armor_layer())
 
 
