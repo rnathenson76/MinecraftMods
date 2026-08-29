@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_furnace": {
+    "description": {
+      "identifier": "gems:ruby_from_smelting_deepslate_ore"
+    },
+    "tags": ["furnace", "blast_furnace"],
+    "input": "gems:deepslate_ruby_ore",
+    "output": "gems:ruby"
+  }
+}

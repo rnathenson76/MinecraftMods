@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "ruby_resources",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "ruby": {
+      "textures": "textures/items/ruby"
+    },
+    "ruby_sword": {
+      "textures": "textures/items/ruby_sword"
+    },
+    "ruby_pickaxe": {
+      "textures": "textures/items/ruby_pickaxe"
+    }
+  }
+}

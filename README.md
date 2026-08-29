@@ -67,8 +67,9 @@ changes the item format again and items stop appearing, that version string
    The tunable numbers live in `BP/entities/rpg_rocket.json`
    (`minecraft:explode` power/breaks_blocks/causes_fire, and the projectile
    `power` = flight speed). Currently in testing.
-3. Ideas for later: a custom block, a custom mob/pet, a small JavaScript
-   script for something interactive.
+3. Ideas for later: a custom mob/pet, a small JavaScript script for
+   something interactive. (The "custom block" idea grew into the Ruby mod,
+   which lives in its own pack — see below.)
 
 ## Chopper — a SEPARATE mod (its own pack)
 
@@ -88,6 +89,67 @@ Files: `chopper/BP` (entity, rideable) and `chopper/RP` (model
 `chopper.geo.json`, texture, rotor animation, spawn egg). The tunable rotor
 speed is `animation_length` in `chopper/RP/animations/chopper.animation.json`.
 
+## Ruby — another SEPARATE mod (its own pack)
+
+Ruby lives in its own pack under `ruby/` with its own UUIDs, so it installs and
+updates independently of Family Mods (sword + RPG) and Chopper, and can't
+disturb either one. Its ids use the `gems:` namespace.
+
+- Build:  `./scripts/build_ruby.sh`  →  `dist/Ruby.mcaddon`
+
+**Finding it.** Ruby Ore generates on its own in any Overworld biome,
+underground between about **y = -48 and y = 24** — so it turns up around the
+same depths as iron and gold. Below y = 0 it appears as **Deepslate Ruby
+Ore**, the same way vanilla ores do. Both drop **1-2 rubies** when you break
+them, and both can be smelted into a ruby in a furnace or blast furnace.
+
+It only shows up in **newly generated chunks**, so go exploring somewhere you
+have never been (or start a new world) — the caves you have already loaded
+will not suddenly have ruby in them.
+
+Mining it needs a pickaxe, and it is set to the same tier as diamond ore, so
+an **iron pickaxe or better** is the tool for it.
+
+**Making things out of it.**
+
+| What you get | How to craft it |
+| --- | --- |
+| Block of Ruby | 9 rubies filling the whole 3x3 crafting grid |
+| 9 rubies back | 1 Block of Ruby on its own in the grid |
+| Ruby Sword | 2 rubies stacked + 1 stick (normal sword shape) |
+| Ruby Pickaxe | 3 rubies across the top + 2 sticks down the middle |
+
+The Ruby Sword and Ruby Pickaxe sit between diamond and netherite: 9 damage
+on the sword, 1800 durability, and you repair either one with more rubies on
+an anvil.
+
+**Testing it quickly** (with cheats on):
+
+```
+/give @s gems:ruby 64
+/give @s gems:ruby_pickaxe
+/setblock ~ ~ ~1 gems:ruby_ore
+```
+
+**Knobs you can turn**
+
+- How much ruby the world has — `ruby/BP/feature_rules/ruby_ore_feature_rule.json`:
+  `iterations` is how many attempts per chunk (higher = more ruby), and the
+  `y` `extent` is the depth range. `count` in
+  `ruby/BP/features/ruby_ore_feature.json` is how many blocks are in each vein.
+- How many rubies a block drops — the `min`/`max` in
+  `ruby/BP/loot_tables/blocks/ruby_ore.json`.
+- Sword damage / tool durability — `ruby/BP/items/ruby_sword.json` and
+  `ruby/BP/items/ruby_pickaxe.json`.
+
+One difference from vanilla ore worth knowing: the ore drops its rubies no
+matter what you break it with, including your bare hand (breaking it by hand
+is just very slow). Custom blocks in Bedrock cannot easily require the right
+tool for the drop, so this is the simple, always-works version.
+
+Files: `ruby/BP` (blocks, items, recipes, loot tables, ore generation) and
+`ruby/RP` (block + item textures, the two texture atlases, names).
+
 ## Project layout
 
 ```
@@ -102,5 +164,9 @@ RP/                        Resource Pack — how it looks
                                        redrawing this is a fun kid project)
   textures/item_texture.json         maps the item id to its texture file
   texts/en_US.lang
+chopper/                   SEPARATE mod — the helicopter (own BP/ + RP/ + UUIDs)
+ruby/                      SEPARATE mod — ruby ore/gem/blocks (own BP/ + RP/ + UUIDs)
 scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
+scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
+scripts/build_ruby.sh      packages ruby/ into dist/Ruby.mcaddon
 ```

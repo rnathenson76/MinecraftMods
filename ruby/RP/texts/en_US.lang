@@ -1,0 +1,6 @@
+item.gems:ruby=Ruby
+item.gems:ruby_sword=Ruby Sword
+item.gems:ruby_pickaxe=Ruby Pickaxe
+tile.gems:ruby_ore.name=Ruby Ore
+tile.gems:deepslate_ruby_ore.name=Deepslate Ruby Ore
+tile.gems:ruby_block.name=Block of Ruby
