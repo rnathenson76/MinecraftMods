@@ -119,6 +119,17 @@ wool   redstone  wool      wool = black wool (the tyres)
 wool   iron blk  wool      redstone = a redstone BLOCK (the engine)
 ```
 
+**Seeing a change without loading Minecraft:**
+
+```
+python3 car/tools/render_preview.py    ->  dist/monster_truck_preview.png
+```
+
+That draws the truck from the real model and texture files (three angles). It's
+handy after editing the shape — and it catches a mistake that's easy to make:
+if two parts share an exact face plane, the preview shows a flickery
+checkerboard there, and that same overlap flickers in the game too.
+
 **The numbers you'd want to change** are all near the top of one file each:
 
 - speed → `"minecraft:movement"` in `car/BP/entities/monster_truck.json`
