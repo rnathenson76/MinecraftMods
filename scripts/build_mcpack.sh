@@ -11,8 +11,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-rm -rf dist
 mkdir -p dist
+# only clear THIS mod's files — dist/ also holds the Chopper and Monster Truck
+rm -f dist/FamilyMods_BP.mcpack dist/FamilyMods_RP.mcpack dist/FamilyMods.mcaddon
 
 (cd BP && zip -r -q ../dist/FamilyMods_BP.mcpack .)
 (cd RP && zip -r -q ../dist/FamilyMods_RP.mcpack .)

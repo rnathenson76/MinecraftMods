@@ -1,3 +1,7 @@
-dist/
+# the built .mcaddon files ARE tracked — that's what you import into Minecraft,
+# and it means the iPad can download one straight from GitHub without the Mac.
+# Everything else the build scripts spit out is throwaway.
+dist/*.mcpack
+dist/*.png
 .DS_Store
 __pycache__/

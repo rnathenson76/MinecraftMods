@@ -21,9 +21,15 @@ packs.
 
 ## How to get it onto the iPad and into the world
 
-1. Run the build script above (on the Mac).
-2. Get `dist/FamilyMods.mcaddon` onto the iPad — AirDrop is easiest, or
-   iCloud Drive / Messages / email also work.
+1. Get the `.mcaddon` file. Either way works:
+   - **From the Mac:** run the build script above, then AirDrop
+     `dist/FamilyMods.mcaddon` to the iPad (iCloud Drive / Messages / email
+     work too).
+   - **Straight from GitHub, no Mac needed:** the built `.mcaddon` files are
+     committed in `dist/`, so on the iPad you can open the repo in Safari,
+     tap the file, and download it. (If the repo is private, sign in to
+     GitHub on the iPad first.)
+2. Whichever way you got it, the file lands in the iPad's Files app.
 3. On the iPad, tap the `.mcaddon` file. Minecraft should open and say it
    imported an add-on (it installs both packs automatically).
 4. In Minecraft: **Play → create or edit a world → Behavior Packs / Resource
@@ -153,6 +159,10 @@ RP/                        Resource Pack — how it looks
                                        redrawing this is a fun kid project)
   textures/item_texture.json         maps the item id to its texture file
   texts/en_US.lang
+dist/                      the built .mcaddon files — these ARE committed, so
+                             the iPad can download one without the Mac. Re-run
+                             a build script after any change and commit the
+                             .mcaddon it produces.
 scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
 scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
 scripts/build_car.sh       packages car/ into dist/MonsterTruck.mcaddon
