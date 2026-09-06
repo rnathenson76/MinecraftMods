@@ -4,27 +4,27 @@
     "name": "Monster Truck",
     "description": "Driveable monster truck — Behavior Pack",
     "uuid": "667e5281-4b85-477d-a65f-6df115b56f28",
-    "version": [1, 0, 0],
+    "version": [1, 0, 1],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
     {
       "type": "data",
       "uuid": "eef1e465-4b1d-4c88-a76d-9e9b532abca4",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     },
     {
       "type": "script",
       "language": "javascript",
       "uuid": "5b94ac32-ce49-4559-9c06-c86ec807edc6",
-      "version": [1, 0, 0],
+      "version": [1, 0, 1],
       "entry": "scripts/main.js"
     }
   ],
   "dependencies": [
     {
       "uuid": "673bb549-01fb-4e4e-8d75-0a0fcfb60995",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     },
     {
       "module_name": "@minecraft/server",
