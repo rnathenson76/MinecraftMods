@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Monster Truck",
+    "description": "Driveable monster truck — Resource Pack",
+    "uuid": "673bb549-01fb-4e4e-8d75-0a0fcfb60995",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "c288a187-2ab7-4aa6-8d2d-7ca366ba3225",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "667e5281-4b85-477d-a65f-6df115b56f28",
+      "version": [1, 0, 0]
+    }
+  ]
+}

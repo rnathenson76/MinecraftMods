@@ -1,0 +1,23 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "vehicles:monster_truck",
+      "materials": { "default": "entity_alphablend" },
+      "textures": { "default": "textures/entity/monster_truck" },
+      "geometry": { "default": "geometry.monster_truck" },
+      "animations": {
+        "wheels_rolling": "animation.monster_truck.wheels",
+        "wheel_controller": "controller.animation.monster_truck.wheels"
+      },
+      "scripts": {
+        "animate": ["wheel_controller"]
+      },
+      "spawn_egg": {
+        "base_color": "#1a1a1c",
+        "overlay_color": "#e86e14"
+      },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

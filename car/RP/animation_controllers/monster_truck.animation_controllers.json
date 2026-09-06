@@ -1,0 +1,21 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.monster_truck.wheels": {
+      "initial_state": "parked",
+      "states": {
+        "parked": {
+          "transitions": [
+            { "rolling": "q.ground_speed > 0.1" }
+          ]
+        },
+        "rolling": {
+          "animations": ["wheels_rolling"],
+          "transitions": [
+            { "parked": "q.ground_speed <= 0.1" }
+          ]
+        }
+      }
+    }
+  }
+}

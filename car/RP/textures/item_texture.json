@@ -1,0 +1,9 @@
+{
+  "resource_pack_name": "monster_truck_resources",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "monster_truck_kit": {
+      "textures": "textures/items/monster_truck"
+    }
+  }
+}

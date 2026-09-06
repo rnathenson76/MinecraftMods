@@ -1,0 +1,24 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "vehicles:monster_truck_kit"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "III",
+      "WRW",
+      "WBW"
+    ],
+    "key": {
+      "I": { "item": "minecraft:iron_ingot" },
+      "W": { "item": "minecraft:black_wool" },
+      "R": { "item": "minecraft:redstone_block" },
+      "B": { "item": "minecraft:iron_block" }
+    },
+    "result": {
+      "item": "vehicles:monster_truck_kit",
+      "count": 1
+    }
+  }
+}

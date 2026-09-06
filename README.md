@@ -88,6 +88,46 @@ Files: `chopper/BP` (entity, rideable) and `chopper/RP` (model
 `chopper.geo.json`, texture, rotor animation, spawn egg). The tunable rotor
 speed is `animation_length` in `chopper/RP/animations/chopper.animation.json`.
 
+## Monster Truck — another SEPARATE mod (its own pack)
+
+The monster truck lives in its own pack under `car/` with its own UUIDs, so it
+installs and updates independently of Family Mods (sword + RPG) and the Chopper,
+and can't disturb either of them.
+
+- Build:  `./scripts/build_car.sh`  →  `dist/MonsterTruck.mcaddon`
+- Entity: `vehicles:monster_truck`; spawn egg reads **"Monster Truck"**
+  (black with orange spots)
+- Item:   `vehicles:monster_truck_kit` — a craftable "Monster Truck" you tap on
+  the ground to place the truck, like a spawn egg
+
+**Driving it:**
+
+- Tap the truck to get in, then steer with the normal move joystick — it's
+  faster than the fastest horse.
+- **HOLD jump = NITRO** — a burst of speed with flames out the exhaust stacks.
+- **TAP jump = HONK** the horn. (Sneak can't be the horn: on Bedrock the sneak
+  button is what gets you *out* of a vehicle.)
+- Drive into a 1-block step and it **climbs** it instead of stopping.
+- It takes no fall damage, can't be shoved around, and drops iron / redstone /
+  diamonds if something destroys it.
+
+**Crafting it** (crafting table):
+
+```
+iron   iron    iron
+wool   redstone  wool      wool = black wool (the tyres)
+wool   iron blk  wool      redstone = a redstone BLOCK (the engine)
+```
+
+**The numbers you'd want to change** are all near the top of one file each:
+
+- speed → `"minecraft:movement"` in `car/BP/entities/monster_truck.json`
+- nitro strength, horn pitch, how high it climbs → the `---- Feel ----` block at
+  the top of `car/BP/scripts/main.js`
+- paint colours and the flame decals → `car/tools/make_textures.py` (re-run
+  `./scripts/build_car.sh` and it redraws them for you)
+- the shape itself → `car/RP/models/entity/monster_truck.geo.json`
+
 ## Project layout
 
 ```
@@ -103,4 +143,6 @@ RP/                        Resource Pack — how it looks
   textures/item_texture.json         maps the item id to its texture file
   texts/en_US.lang
 scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
+scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
+scripts/build_car.sh       packages car/ into dist/MonsterTruck.mcaddon
 ```

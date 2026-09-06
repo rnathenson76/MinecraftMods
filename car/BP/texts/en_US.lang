@@ -1,0 +1,4 @@
+entity.vehicles:monster_truck.name=Monster Truck
+item.spawn_egg.entity.vehicles:monster_truck.name=Monster Truck
+item.vehicles:monster_truck_kit=Monster Truck
+action.hint.exit.vehicles:monster_truck=Tap to get out
