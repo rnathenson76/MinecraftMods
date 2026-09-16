@@ -1,0 +1,314 @@
+<title>Squirrel Before &amp; After</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bark:#F0F1EA; --panel:#FFFFFF; --edge:#D6D9CC; --edge-soft:#E6E8DD;
+    --ink:#1B211A; --ink-soft:#5C6458; --acorn:#A9571B; --moss:#5A7A45;
+    --sky-a:#E8EBE0; --sky-b:#F7F8F2;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --bark:#12160F; --panel:#1A2016; --edge:#2E3828; --edge-soft:#232B1E;
+    --ink:#E6EADD; --ink-soft:#97A18C; --acorn:#DE9346; --moss:#8FB071;
+    --sky-a:#161C13; --sky-b:#1D2419;
+  }}
+  :root[data-theme="dark"]{
+    --bark:#12160F; --panel:#1A2016; --edge:#2E3828; --edge-soft:#232B1E;
+    --ink:#E6EADD; --ink-soft:#97A18C; --acorn:#DE9346; --moss:#8FB071;
+    --sky-a:#161C13; --sky-b:#1D2419;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bark);color:var(--ink);
+       font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:24px 16px 56px}
+
+  header{margin-bottom:22px}
+  h1{font:800 clamp(30px,5.2vw,46px)/1.02 "Bricolage Grotesque",system-ui,sans-serif;
+     margin:0 0 6px;letter-spacing:-.022em;text-wrap:balance}
+  .sub{color:var(--ink-soft);margin:0;max-width:58ch}
+  .sub b{color:var(--acorn);font-weight:600}
+
+  .bar{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 14px;align-items:center}
+  button{font:500 13px/1 "IBM Plex Sans",system-ui,sans-serif;color:var(--ink);
+    background:var(--panel);border:1px solid var(--edge);border-radius:7px;
+    padding:9px 13px;cursor:pointer;transition:border-color .12s,background .12s}
+  button:hover{border-color:var(--ink-soft)}
+  button[aria-pressed="true"]{background:var(--acorn);border-color:var(--acorn);color:#fff}
+  button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+  .hint{color:var(--ink-soft);font-size:12.5px;margin-left:auto}
+
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.stage{grid-template-columns:1fr}}
+  .cell{border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--panel)}
+  .cv{display:block;width:100%;height:340px;
+      background:linear-gradient(170deg,var(--sky-b),var(--sky-a));cursor:grab;touch-action:none}
+  .cv:active{cursor:grabbing}
+  .cap{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+       padding:11px 14px;border-top:1px solid var(--edge-soft)}
+  .cap h2{font:600 15px/1 "Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+  .cap .tag{font:600 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--moss);border:1px solid var(--edge);
+    border-radius:4px;padding:3px 6px}
+  .cap .m{font:400 12.5px/1 "IBM Plex Mono",monospace;color:var(--ink-soft);
+    margin-left:auto;font-variant-numeric:tabular-nums}
+
+  .facts{margin-top:26px;border-top:1px solid var(--edge);padding-top:18px}
+  .facts h3{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);margin:0 0 12px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--edge-soft)}
+  th{font-weight:600;color:var(--ink-soft);font-size:12.5px}
+  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+       white-space:nowrap}
+  td.hl{color:var(--acorn);font-weight:600}
+  .note{margin-top:16px;color:var(--ink-soft);font-size:13.5px;max-width:64ch}
+  .note code{font:400 12.5px/1 "IBM Plex Mono",monospace;background:var(--edge-soft);
+    padding:2px 5px;border-radius:4px;color:var(--ink)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Squirrel Before &amp; After</h1>
+    <p class="sub">The two models the squirrel swaps between. He sits at <b>half a block</b>
+       until a monster comes within 8 blocks &mdash; then he becomes the one on the right.</p>
+  </header>
+
+  <div class="bar">
+    <button id="bScale" aria-pressed="false">True scale</button>
+    <button id="bHit"   aria-pressed="false">Hitbox</button>
+    <button id="bSpin"  aria-pressed="true">Spin</button>
+    <span class="hint">Drag to turn &middot; scroll to zoom</span>
+  </div>
+
+  <div class="stage">
+    <div class="cell">
+      <canvas class="cv" id="cvA"></canvas>
+      <div class="cap"><h2>Scrawny</h2><span class="tag">variant 0</span>
+        <span class="m" id="mA"></span></div>
+    </div>
+    <div class="cell">
+      <canvas class="cv" id="cvB"></canvas>
+      <div class="cap"><h2>Buff</h2><span class="tag">variant 1</span>
+        <span class="m" id="mB"></span></div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <h3>The numbers Minecraft actually gets</h3>
+    <table>
+      <thead><tr><th>&nbsp;</th><th>Scrawny</th><th>Buff</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <p class="note">Minecraft measures models in <b>units</b>, and 16 units = 1 block.
+      The <code>scale</code> row is the number that goes in the behaviour pack &mdash;
+      the two models are different shapes, so the scale values aren't 15&times; apart
+      even though the squirrel is. Height is what's 15&times;, tail not counted.
+      Turn on <b>Hitbox</b> to see the box he actually occupies: much smaller than he
+      looks, which is why a 7&frac12;-block squirrel still fits through your world.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = {"texSize":128,"models":[{"bones":[{"name":"body","pivot":[0,4,0],"cubes":[{"origin":[-2.5,2.5,-3.5],"size":[5,4,8],"uv":[0,0]}]},{"name":"legs","pivot":[0,0,0],"cubes":[{"origin":[-2.4,0,2.0],"size":[1.5,2.5,1.5],"uv":[26,0]},{"origin":[0.9,0,2.0],"size":[1.5,2.5,1.5],"uv":[34,0]},{"origin":[-2.4,0,-3.0],"size":[1.5,2.5,1.5],"uv":[42,0]},{"origin":[0.9,0,-3.0],"size":[1.5,2.5,1.5],"uv":[50,0]}]},{"name":"head","pivot":[0,6.5,-3.5],"cubes":[{"origin":[-2.5,5.5,-7.5],"size":[5,5,4],"uv":[58,0]},{"origin":[-1.0,6.0,-9.0],"size":[2,2,1.5],"uv":[76,0]},{"origin":[-2.3,10.5,-6.5],"size":[1.5,2.5,1.0],"uv":[84,0]},{"origin":[0.8,10.5,-6.5],"size":[1.5,2.5,1.0],"uv":[90,0]}]},{"name":"tail","pivot":[0,5,4.0],"cubes":[{"origin":[-1.5,4.5,4.0],"size":[3,5,2.5],"uv":[96,0]},{"origin":[-2.5,9.0,2.5],"size":[5,6,4],"uv":[106,0]}],"rotation":[-22,0,0]}],"tallUnits":15.0,"wideUnits":5.0,"fitScale":1.0667,"trueScale":0.533,"hitbox":[0.5,0.5],"cubeCount":11},{"bones":[{"name":"body","pivot":[0,10,0],"cubes":[{"origin":[-5.0,8.5,-4.5],"size":[10,6.5,9],"uv":[0,0]},{"origin":[-3.5,14.5,-2.5],"size":[7,2,5],"uv":[38,0]},{"origin":[-2.8,4.8,-2.0],"size":[5.6,4,5.5],"uv":[62,0]}]},{"name":"arm_l","pivot":[-5,13,0],"cubes":[{"origin":[-8.6,10.5,-3.6],"size":[3.2,5.2,6.6],"uv":[86,0]},{"origin":[-9.2,5.0,-2.8],"size":[3.4,5.6,5],"uv":[106,0]},{"origin":[-9.8,0.8,-2.8],"size":[3.4,4.4,4.6],"uv":[0,15]}],"rotation":[0,0,-11]},{"name":"arm_r","pivot":[5,13,0],"cubes":[{"origin":[5.4,10.5,-3.6],"size":[3.2,5.2,6.6],"uv":[16,15]},{"origin":[5.8,5.0,-2.8],"size":[3.4,5.6,5],"uv":[36,15]},{"origin":[6.4,0.8,-2.8],"size":[3.4,4.4,4.6],"uv":[52,15]}],"rotation":[0,0,11]},{"name":"legs","pivot":[0,0,0],"cubes":[{"origin":[-4.2,2.2,0.5],"size":[4,4.2,5],"uv":[68,15]},{"origin":[0.2,2.2,0.5],"size":[4,4.2,5],"uv":[86,15]},{"origin":[-3.9,0,1.0],"size":[3.4,2.4,4],"uv":[104,15]},{"origin":[0.5,0,1.0],"size":[3.4,2.4,4],"uv":[0,27]}]},{"name":"head","pivot":[0,14,-4],"cubes":[{"origin":[-2.8,13.8,-8.5],"size":[5.6,5.2,5],"uv":[14,27]},{"origin":[-1.1,14.2,-10.0],"size":[2.2,2.2,1.6],"uv":[36,27]},{"origin":[-2.6,19.0,-7.0],"size":[1.9,3,1.2],"uv":[44,27]},{"origin":[0.7,19.0,-7.0],"size":[1.9,3,1.2],"uv":[50,27]}]},{"name":"tail","pivot":[0,9,4.5],"cubes":[{"origin":[-2.5,9.0,4.2],"size":[5,7,3.5],"uv":[56,27]},{"origin":[-4.5,15.0,2.8],"size":[9,8,6],"uv":[74,27]}],"rotation":[-28,0,0]}],"tallUnits":23.0,"wideUnits":19.6,"fitScale":0.6957,"trueScale":5.217,"hitbox":[1.5,2.0],"cubeCount":19}],"tex":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAE+0lEQVR42u2YZ49VVRSG708gfvIjNmwgvahY8RMK2Cvd3utv8AMWqqCUYWZogg0ViCaa2GLBGI0mmNiCqCH4J5Z5TrIme86cK1zukGGS50lOzpp99t6zz1rvXmuf22odh9U3nR9bFk2N9bePj5ULzotN90yOIwd3DrlaJ0h9rvrznsXTYsMdE2LVjeNi88IpQ56/eMPZ8eqdl0Suq/78pXnnxGt3TYw1N18QL1x/Vtt1rb3lwijnWjF37KB1rbv1omCuduN//3xLHPpofRz5uj9+/XTToH7lXH3LZg48K9fFO5Zj+pdOin3PXBu77p8eh/Y+P3C1+//vP31N7LxvWmxdNCHeePjS2L58yqBxxxvf6iRgBOKV2y6OrUumBwHqRgAvzz83epfOGJir/pyApABwYP15//JZlVM33j2pCnT9Oc+YHycTiHbr4FnOhRCyP++KAJgfkbQb/9OHa+Ofb3fE3we3x1/fbItSoMyFv3hXREQb71r6si6wbcsmByLoWzLxhAKY/RENYnjvqatPjQAICE7KHYl9MgLAKTiVOdgF2DgcG+fkrsH5OI7gIpLc6QQLx2HjOGzGYTMnNk7FxuHYCCF3eVMGYP7cjdgIDptx2E0C/eOLnvj3hz0xe9zY6jr63a745ZONlRh+/GBNtS58xPvwDti8AzbvgM382KyLABL0Nx+5rNrN7OS9T1wZ+5+dE68/MKMKbu/ioevvWTi+yhbvPH5FNa6eOYZNAKlgLpxGcE5GALm7cmdxEXzacQoBQ2QEBAcRaIKS7fRnLGPoz0V7ZgPG4ORsR0gEk/6sub4exiA4+hOIzDwEnv6Zqerj/vyqL0j/h7/sjd8+2xw/f7whyAbHvt9dCaBT/+5+cGYceO66KtAEc89Ds6rUTvuOe6dW7YihPg6R0J/A05/rlAggFYwzcCx2NyVgpEBIiAqBYSM8RFXaCLS0EQ82uxW76czSLez4tx69fFDQSO9kBAKfNumeWl/aZI/SRjzYZBRsxFPaiKrjBeIIHJc1i105GgWQGYQskVknOfOMMVVbngN4V4KdBzbuWYKGe115iCsFQD0nYASOoHEnkLQhAERBW9Z/7szBOO55NiCDIDDaUkwdLxBHkRZxAELAHo0CQMikeO5kM4JM4POiBFASuCNy7DwbcM9yMtzrYvdT60sBEHSCRXon4NwJZNZ6+mOT9rGzBHAu4E4fbISAzT3LSccLpPaz8/MQN1oFwM6mriNkgktpY0fTnkFOEeQhMNs5DNKOL0Zq/e8+eVUVTAJP7W+q9ymCtx+bXQmDXc9ZgWyAqBoFgCNIiwQXB/yfnQcm7HRYaXNGaLJx3ulQAhBxHmab7CwDeTit24hnpNZPEMkGmfKbBJBlgD5NNmWj8fMsv1PLb9as+flJhZ3fteyM0s5vXgKddp6mcze1pCsy8HkOaBJA+dsAu587JSZtykjjDzP5nZrf5+ze/E5tSvfU0fw+J7iIhN3ObmJMHqb4O39VM4SnKQSOXZs/suQOJoj83SSA/PEmzwSUkfwxJ9vzF7UUgZ4WERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERkW74DxPfJwEUwvyMAAAAAElFTkSuQmCC","data:image/png;base64,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"]};
+
+const TEXSZ = DATA.texSize, U = 1/16;
+const loader = new THREE.TextureLoader();
+
+function makeTex(src){
+  const t = loader.load(src);
+  t.magFilter = THREE.NearestFilter;      // keep the pixels crisp
+  t.minFilter = THREE.NearestFilter;
+  t.generateMipmaps = false;
+  return t;
+}
+
+// Minecraft's flat "cereal box" unwrap -> three.js BoxGeometry UVs.
+function faceRects(u,v,w,h,d){
+  return {                                   // [x, y, w, h] in pixels, y from top
+    px:[u,         v+d, d, h],  nx:[u+d+w,     v+d, d, h],
+    py:[u+d,       v,   w, d],  ny:[u+d+w,     v,   w, d],
+    pz:[u+d+w+d,   v+d, w, h],  nz:[u+d,       v+d, w, h],
+  };
+}
+function applyUV(geo, uv, size){
+  const [w,h,d] = size.map(Math.round);
+  const r = faceRects(uv[0], uv[1], w, h, d);
+  const order = ['px','nx','py','ny','pz','nz'];
+  const a = geo.attributes.uv;
+  order.forEach((k,i)=>{
+    const [x,y,fw,fh] = r[k];
+    const u0=x/TEXSZ, u1=(x+fw)/TEXSZ, v0=1-y/TEXSZ, v1=1-(y+fh)/TEXSZ;
+    a.setXY(i*4+0,u0,v0); a.setXY(i*4+1,u1,v0);
+    a.setXY(i*4+2,u0,v1); a.setXY(i*4+3,u1,v1);
+  });
+  a.needsUpdate = true;
+}
+
+function buildModel(def, tex){
+  const root = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({map:tex, alphaTest:0.5});
+  for(const bone of def.bones){
+    const g = new THREE.Group();
+    const [px,py,pz] = bone.pivot;
+    g.position.set(px*U, py*U, pz*U);
+    if(bone.rotation){                         // Bedrock flips X and Y
+      g.rotation.set(-bone.rotation[0]*Math.PI/180,
+                     -bone.rotation[1]*Math.PI/180,
+                      bone.rotation[2]*Math.PI/180);
+    }
+    for(const c of bone.cubes){
+      const [w,h,d] = c.size;
+      const geo = new THREE.BoxGeometry(w*U, h*U, d*U);
+      applyUV(geo, c.uv, c.size);
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set((c.origin[0]+w/2)*U - px*U,
+                     (c.origin[1]+h/2)*U - py*U,
+                     (c.origin[2]+d/2)*U - pz*U);
+      g.add(m);
+    }
+    root.add(g);
+  }
+  return root;
+}
+
+function hitboxMesh(w,h){
+  const g = new THREE.BoxGeometry(w,h,w);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(g),
+            new THREE.LineBasicMaterial({color:0xD9822B}));
+  e.position.y = h/2;
+  return e;
+}
+
+function groundGrid(n){
+  const g = new THREE.GridHelper(n, n, 0x8a9480, 0x8a9480);
+  g.material.opacity = 0.34; g.material.transparent = true;
+  return g;
+}
+
+function playerRef(){
+  const g = new THREE.Group();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(0.6,1.8,0.6),
+        new THREE.MeshLambertMaterial({color:0x6f86a8, transparent:true, opacity:0.4}));
+  box.position.y = 0.9;
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.6,1.8,0.6)),
+        new THREE.LineBasicMaterial({color:0x6f86a8}));
+  e.position.y = 0.9;
+  g.add(box, e);
+  return g;
+}
+
+function makeView(canvas, def, texSrc, scaleFit, scaleTrue, hit){
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(38, 1, 0.01, 200);
+  const rend = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  rend.setPixelRatio(Math.min(devicePixelRatio,2));
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.82));
+  const key = new THREE.DirectionalLight(0xffffff, 0.68);
+  key.position.set(1.1, 1.6, 0.9); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xbfd0e8, 0.3);
+  rim.position.set(-1.2, 0.5, -1.1); scene.add(rim);
+
+  const pivot = new THREE.Group(); scene.add(pivot);
+  const model = buildModel(def, makeTex(texSrc));
+  const holder = new THREE.Group(); holder.add(model); pivot.add(holder);
+
+  const grid = groundGrid(16); pivot.add(grid);
+  const hb = hitboxMesh(hit[0], hit[1]); hb.visible = false; pivot.add(hb);
+  const ref = playerRef(); ref.visible = false; ref.position.x = -1.6; pivot.add(ref);
+
+  const view = {yaw:0.62, pitch:0.22, dist:1, spin:true, trueScale:false};
+
+  function layout(){
+    const s = view.trueScale ? scaleTrue : scaleFit;
+    holder.scale.setScalar(s);
+    hb.visible = document.getElementById('bHit').getAttribute('aria-pressed')==='true';
+    ref.visible = view.trueScale;
+    // frame whatever is currently the tallest thing on the pad
+    const tall = Math.max(def.tallUnits*U*s, hb.visible?hit[1]:0, view.trueScale?1.8:0);
+    const span = Math.max(tall, def.wideUnits*U*s*0.8);
+    view.dist = span * 2.35 + 0.35;
+    grid.scale.setScalar(Math.max(span,0.6)/8);
+    ref.position.x = -span*0.78;
+    hb.position.set(0,0,0);
+    return tall;
+  }
+
+  function resize(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w||!h) return;
+    rend.setSize(w,h,false); cam.aspect = w/h; cam.updateProjectionMatrix();
+  }
+
+  function frame(){
+    const tall = layout();
+    resize();
+    if(view.spin) view.yaw += 0.0045;
+    const d = view.dist, cy = tall*0.52;
+    cam.position.set(Math.sin(view.yaw)*Math.cos(view.pitch)*d,
+                     cy + Math.sin(view.pitch)*d,
+                     Math.cos(view.yaw)*Math.cos(view.pitch)*d);
+    cam.lookAt(0, cy, 0);
+    rend.render(scene, cam);
+  }
+
+  let drag=null;
+  canvas.addEventListener('pointerdown', e=>{
+    drag={x:e.clientX,y:e.clientY}; view.spin=false;
+    document.getElementById('bSpin').setAttribute('aria-pressed','false');
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e=>{
+    if(!drag) return;
+    view.yaw -= (e.clientX-drag.x)*0.01;
+    view.pitch = Math.max(-0.5, Math.min(1.15, view.pitch + (e.clientY-drag.y)*0.006));
+    drag={x:e.clientX,y:e.clientY};
+  });
+  ['pointerup','pointercancel'].forEach(t=>canvas.addEventListener(t,()=>drag=null));
+  canvas.addEventListener('wheel', e=>{
+    e.preventDefault();
+    view.zoom = Math.max(0.5, Math.min(2.4, (view.zoom||1) * (e.deltaY>0?1.09:0.92)));
+  }, {passive:false});
+
+  return {view, frame};
+}
+
+// ---- boot -------------------------------------------------------------
+const A = DATA.models[0], B = DATA.models[1];
+const vA = makeView(document.getElementById('cvA'), A, DATA.tex[0], A.fitScale, A.trueScale, A.hitbox);
+const vB = makeView(document.getElementById('cvB'), B, DATA.tex[1], B.fitScale, B.trueScale, B.hitbox);
+
+document.getElementById('mA').textContent =
+  A.tallUnits.toFixed(0)+' units · '+(A.tallUnits*A.trueScale/16).toFixed(2)+' blocks';
+document.getElementById('mB').textContent =
+  B.tallUnits.toFixed(0)+' units · '+(B.tallUnits*B.trueScale/16).toFixed(2)+' blocks';
+
+const rows = [
+  ['Height in the world', (A.tallUnits*A.trueScale/16).toFixed(2)+' blocks',
+                          (B.tallUnits*B.trueScale/16).toFixed(2)+' blocks', true],
+  ['Width',               (A.wideUnits*A.trueScale/16).toFixed(2)+' blocks',
+                          (B.wideUnits*B.trueScale/16).toFixed(2)+' blocks', false],
+  ['Model size',          A.tallUnits+' × '+A.wideUnits+' units',
+                          B.tallUnits+' × '+B.wideUnits+' units', false],
+  ['minecraft:scale',     A.trueScale.toFixed(2), B.trueScale.toFixed(2), false],
+  ['Collision box',       A.hitbox[0]+' × '+A.hitbox[1]+' blocks',
+                          B.hitbox[0]+' × '+B.hitbox[1]+' blocks', false],
+  ['Boxes in the model',  A.cubeCount, B.cubeCount, false],
+];
+document.getElementById('tb').innerHTML = rows.map(([k,a,b,hl])=>
+  '<tr><th>'+k+'</th><td class="n'+(hl?' hl':'')+'">'+a+
+  '</td><td class="n'+(hl?' hl':'')+'">'+b+'</td></tr>').join('');
+
+const bScale=document.getElementById('bScale'), bHit=document.getElementById('bHit'),
+      bSpin=document.getElementById('bSpin');
+function toggle(btn){ const on = btn.getAttribute('aria-pressed')!=='true';
+  btn.setAttribute('aria-pressed', on?'true':'false'); return on; }
+bScale.onclick = ()=>{ const on=toggle(bScale);
+  vA.view.trueScale=on; vB.view.trueScale=on;
+  bScale.textContent = on ? 'Match heights' : 'True scale'; };
+bHit.onclick  = ()=> toggle(bHit);
+bSpin.onclick = ()=>{ const on=toggle(bSpin); vA.view.spin=on; vB.view.spin=on; };
+
+(function loop(){ vA.frame(); vB.frame(); requestAnimationFrame(loop); })();
+</script>
