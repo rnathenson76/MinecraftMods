@@ -4,8 +4,16 @@
     {
       "description": {
         "identifier": "geometry.squirrel_scrawny",
-        "texture_width": 128,
-        "texture_height": 128,
+        "texture_width": [
+          5,
+          6,
+          4
+        ],
+        "texture_height": [
+          5,
+          6,
+          4
+        ],
         "visible_bounds_width": 4,
         "visible_bounds_height": 4,
         "visible_bounds_offset": [
@@ -241,8 +249,16 @@
     {
       "description": {
         "identifier": "geometry.squirrel_buff",
-        "texture_width": 128,
-        "texture_height": 128,
+        "texture_width": [
+          9,
+          8,
+          6
+        ],
+        "texture_height": [
+          9,
+          8,
+          6
+        ],
         "visible_bounds_width": 4,
         "visible_bounds_height": 4,
         "visible_bounds_offset": [

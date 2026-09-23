@@ -34,6 +34,8 @@ C = {
     "eye_lit": (255, 255, 255),
     "nose":    ( 60,  38,  32),
     "claw":    ( 70,  52,  40),
+    "nut":     (198, 150,  92),   # the acorn he throws
+    "nut_cap": (104,  70,  40),
 }
 
 # ------------------------------------------------------------------ boxes
@@ -101,9 +103,16 @@ BUFF = [
     ]),
 ]
 
+NUT = [
+    ("nut", [0, 0, 0], None, [
+        ("shell", [-1.5, 0,   -1.5], [3, 3,   3], "nut", None),
+        ("cap",   [-2.0, 2.8, -2.0], [4, 1.5, 4], "nut_cap", None),
+    ]),
+]
+
 # Boxes that get muscle shading drawn on their front face (buff only).
 MUSCLE_SPLIT = {"chest", "waist"}
-HITBOX = {"squirrel_scrawny": [0.5, 0.5], "squirrel_buff": [1.5, 2.0]}
+HITBOX = {"squirrel_scrawny": [0.5, 0.5], "squirrel_buff": [1.5, 2.0], "nut": [0.25, 0.25]}
 
 MUSCLE_BULGE = {"bicep_l", "bicep_r", "delt_l", "delt_r", "thigh_l", "thigh_r"}
 
@@ -132,19 +141,19 @@ def box_faces(u, v, w, h, d):
     }
 
 
-def pack(boxes):
+def pack(boxes, tex_size=None):
     """Lay every box's patch out on the texture without overlaps (shelf packing)."""
     placed, x, y, shelf = {}, 0, 0, 0
     for name, origin, size, col, belly in boxes:
         w, h, d = (int(round(s)) for s in size)
         pw, ph = 2 * (w + d), h + d
-        if x + pw > TEX:
+        if x + pw > (tex_size or TEX):
             x, y, shelf = 0, y + shelf, 0
         placed[name] = (x, y)
         x += pw
         shelf = max(shelf, ph)
-    if y + shelf > TEX:
-        raise SystemExit(f"texture too small: needs {y + shelf}px, have {TEX}")
+    if y + shelf > (tex_size or TEX):
+        raise SystemExit(f"texture too small: needs {y + shelf}px")
     return placed
 
 
@@ -231,7 +240,7 @@ def paint(img, boxes, uvs, buff):
                 img.rect(bx, by + bh // 2, bw, 1, C["fur_dk"])       # bulge crease
 
 
-def geometry(ident, bones, uvs):
+def geometry(ident, bones, uvs, size=None):
     out = []
     for bname, pivot, rot, boxes in bones:
         cubes = []
@@ -245,7 +254,7 @@ def geometry(ident, bones, uvs):
     return {
         "description": {
             "identifier": f"geometry.{ident}",
-            "texture_width": TEX, "texture_height": TEX,
+            "texture_width": size or TEX, "texture_height": size or TEX,
             "visible_bounds_width": 4, "visible_bounds_height": 4,
             "visible_bounds_offset": [0, 1, 0],
         },
@@ -253,13 +262,14 @@ def geometry(ident, bones, uvs):
     }, tall
 
 
-def build(ident, bones, buff):
+def build(ident, bones, buff, size=None):
+    size = size or TEX
     boxes = [b for _, _, _, bs in bones for b in bs]
-    uvs = pack(boxes)
-    img = Img(TEX)
+    uvs = pack(boxes, size)
+    img = Img(size)
     paint(img, boxes, uvs, buff)
     img.write(os.path.join(RP, "textures", "entity", f"{ident}.png"))
-    geo, tall = geometry(ident, bones, uvs)
+    geo, tall = geometry(ident, bones, uvs, size)
     wide = max(o[0] + s[0] for _, o, s, _, _ in boxes) - min(o[0] for _, o, s, _, _ in boxes)
     return geo, tall, wide
 
@@ -289,6 +299,13 @@ def write_viewer(models):
 def main():
     scrawny, s_tall, s_wide = build("squirrel_scrawny", SCRAWNY, buff=False)
     buff,    b_tall, b_wide = build("squirrel_buff",    BUFF,    buff=True)
+
+    nut, _, _ = build("nut", NUT, buff=False, size=32)
+    npath = os.path.join(RP, "models", "entity", "nut.geo.json")
+    os.makedirs(os.path.dirname(npath), exist_ok=True)
+    with open(npath, "w") as fh:
+        json.dump({"format_version": "1.12.0", "minecraft:geometry": [nut]}, fh, indent=2)
+        fh.write("\n")
 
     path = os.path.join(RP, "models", "entity", "squirrel.geo.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)

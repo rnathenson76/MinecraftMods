@@ -88,6 +88,86 @@ Files: `chopper/BP` (entity, rideable) and `chopper/RP` (model
 `chopper.geo.json`, texture, rotor animation, spawn egg). The tunable rotor
 speed is `animation_length` in `chopper/RP/animations/chopper.animation.json`.
 
+## Squirrel — a SEPARATE mod (its own pack)
+
+A tameable squirrel that **grows 15x and throws nuts** when a monster gets
+close. Its own pack under `squirrel/` with its own UUIDs, so it installs and
+updates independently of Family Mods and the Chopper.
+
+- Build:  `./scripts/build_squirrel.sh`  →  `dist/Squirrel.mcaddon`
+- Entity: `pets:squirrel`; projectile `pets:nut`; spawn egg reads **"Squirrel"**
+- **Where do you find one?** In the woods — oak/birch forests and taigas, on
+  grass, in daylight, in groups of 1–3. Only in chunks you haven't visited yet;
+  already-generated terrain won't grow squirrels. Or use the spawn egg.
+- **Taming:** feed it wheat seeds (1 in 3 chance, like a wolf). A tamed squirrel
+  follows you and sits when you tap it. Feed it seeds again to heal it.
+
+### How the transformation works
+
+No JavaScript — it's all component groups, the same mechanism a baby zombie
+uses to grow up. The squirrel carries two of them and swaps between them:
+
+| | `pets:small` | `pets:giant` |
+|---|---|---|
+| Looks like | scrawny model | buff model |
+| Height | 0.5 blocks | **7.5 blocks** |
+| Collision box | 0.5 × 0.5 | 1.5 × 2.0 |
+| Can attack | no | nuts + a melee swipe |
+
+`minecraft:target_nearby_sensor` does the switching: a monster inside **8
+blocks** fires `pets:go_giant`, and once everything is past **12 blocks** it
+fires `pets:go_small`. The two different distances stop it flickering between
+sizes when a mob paces the boundary.
+
+The giant form looks 15x bigger but only *occupies* 1.5 × 2 blocks, which is
+why a 7½-block squirrel still fits through the world instead of suffocating in
+caves. That gap is deliberate — `minecraft:scale` is visual, `collision_box` is
+physical, and they're set separately.
+
+Wild squirrels transform too, so the forest is genuinely dangerous.
+
+### Tuning it
+
+Everything is one number in `squirrel/BP/entities/squirrel.json`:
+
+| What | Where |
+|---|---|
+| How close a monster has to get | `target_nearby_sensor` → `inside_range` |
+| How far before he shrinks | `target_nearby_sensor` → `outside_range` |
+| Melee swipe damage | `pets:giant` → `minecraft:attack` → `damage` |
+| How tough he is | `minecraft:health` (100) |
+| Damage resistance when giant | `pets:giant` → `damage_sensor` → `damage_multiplier` |
+| How fast he throws | `behavior.ranged_attack` → `attack_interval_min/max` |
+| Nut damage / speed | `squirrel/BP/entities/nut.json` → `impact_damage`, `power` |
+
+Which monsters set him off is the filter list in
+`behavior.nearest_attackable_target` — currently the `monster` family plus
+piglins and hoglins, so cows, villagers and iron golems are safe.
+
+### The models
+
+Both squirrels are generated, not hand-edited:
+
+```
+python3 tools/squirrel_model.py     # models + textures + the previewer
+python3 tools/check_squirrel.py     # catches typos Minecraft won't report
+```
+
+`tools/squirrel_model.py` describes both squirrels as a list of boxes near the
+top of the file (16 units = 1 block). Change a number, re-run, and the
+geometry, both textures and the previewer are all rebuilt together.
+
+**`tools/squirrel_viewer.html` — open this in a browser on the computer.** Drag
+to turn either squirrel, toggle **True scale** to see the 15x next to a player
+silhouette, and **Hitbox** to see the collision box. Much faster than building
+an `.mcaddon` and loading it on the iPad to look at a model.
+
+`tools/check_squirrel.py` cross-checks every identifier, texture path, geometry
+name, animation and sound reference between the two packs. A typo in an
+add-on doesn't produce an error in Minecraft — the mob just turns up invisible
+or not at all — so this runs automatically as part of the build.
+
+
 ## Project layout
 
 ```

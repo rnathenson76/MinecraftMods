@@ -1,0 +1,23 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.squirrel.transform": {
+      "initial_state": "small",
+      "states": {
+        "small": {
+          "transitions": [{ "growing": "query.variant == 1" }]
+        },
+        "growing": {
+          "animations": ["transform"],
+          "transitions": [
+            { "small": "query.variant == 0" },
+            { "big": "query.all_animations_finished" }
+          ]
+        },
+        "big": {
+          "transitions": [{ "small": "query.variant == 0" }]
+        }
+      }
+    }
+  }
+}

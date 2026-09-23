@@ -1,0 +1,71 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.nut",
+        "texture_width": [
+          4,
+          1.5,
+          4
+        ],
+        "texture_height": [
+          4,
+          1.5,
+          4
+        ],
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 4,
+        "visible_bounds_offset": [
+          0,
+          1,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "nut",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -1.5,
+                0,
+                -1.5
+              ],
+              "size": [
+                3,
+                3,
+                3
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2.0,
+                2.8,
+                -2.0
+              ],
+              "size": [
+                4,
+                1.5,
+                4
+              ],
+              "uv": [
+                12,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
