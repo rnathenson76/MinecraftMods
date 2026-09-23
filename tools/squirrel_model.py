@@ -48,65 +48,65 @@ C = {
 
 SCRAWNY = [
     ("body", [0, 4, 0], None, [
-        ("torso",   [-2.5,  2.5, -3.5], [5,   4,   8  ], "fur", "belly"),
+        ("torso",   [-2,  3, -4], [4, 4, 8], "fur", "belly"),
     ]),
     ("legs", [0, 0, 0], None, [
-        ("leg_bl",  [-2.4,  0,    2.0], [1.5, 2.5, 1.5], "fur", None),
-        ("leg_br",  [ 0.9,  0,    2.0], [1.5, 2.5, 1.5], "fur", None),
-        ("leg_fl",  [-2.4,  0,   -3.0], [1.5, 2.5, 1.5], "fur", None),
-        ("leg_fr",  [ 0.9,  0,   -3.0], [1.5, 2.5, 1.5], "fur", None),
+        ("leg_bl",  [-2,  0,  2], [1, 3, 1], "fur", None),
+        ("leg_br",  [ 1,  0,  2], [1, 3, 1], "fur", None),
+        ("leg_fl",  [-2,  0, -3], [1, 3, 1], "fur", None),
+        ("leg_fr",  [ 1,  0, -3], [1, 3, 1], "fur", None),
     ]),
-    ("head", [0, 6.5, -3.5], None, [
-        ("head",    [-2.5,  5.5, -7.5], [5,   5,   4  ], "fur", None),
-        ("snout",   [-1.0,  6.0, -9.0], [2,   2,   1.5], "snout", None),
-        ("ear_l",   [-2.3, 10.5, -6.5], [1.5, 2.5, 1.0], "fur", None),
-        ("ear_r",   [ 0.8, 10.5, -6.5], [1.5, 2.5, 1.0], "fur", None),
+    ("head", [0, 7, -4], None, [
+        ("head",    [-2,  6, -8], [4, 4, 4], "fur", None),
+        ("snout",   [-1,  6, -9], [2, 2, 1], "snout", None),
+        ("ear_l",   [-2, 10, -7], [1, 2, 1], "fur", None),
+        ("ear_r",   [ 1, 10, -7], [1, 2, 1], "fur", None),
     ]),
-    ("tail", [0, 5, 4.0], [-22, 0, 0], [
-        ("tail_lo", [-1.5,  4.5,  4.0], [3,   5,   2.5], "tail", "tail_lt"),
-        ("tail_up", [-2.5,  9.0,  2.5], [5,   6,   4  ], "tail", "tail_lt"),
+    ("tail", [0, 5, 4], [-22, 0, 0], [
+        ("tail_lo", [-1,  5,  4], [2, 5, 2], "tail", "tail_lt"),
+        ("tail_up", [-2,  9,  3], [4, 6, 3], "tail", "tail_lt"),
     ]),
 ]
 
 BUFF = [
     ("body", [0, 10, 0], None, [
-        ("chest",   [-5.0,  8.5, -4.5], [10,  6.5, 9  ], "fur", "belly"),
-        ("traps",   [-3.5, 14.5, -2.5], [7,   2,   5  ], "fur", None),
-        ("waist",   [-2.8,  4.8, -2.0], [5.6, 4,   5.5], "fur", "belly"),
+        ("chest",   [-5,  8, -5], [10, 7, 9], "fur", "belly"),
+        ("traps",   [-4, 15, -3], [ 8, 2, 5], "fur", None),
+        ("waist",   [-3,  5, -2], [ 6, 4, 6], "fur", "belly"),
     ]),
     # arms splay outwards -- he is too jacked to put them down
     ("arm_l", [-5, 13, 0], [0, 0, -11], [
-        ("delt_l",  [-8.6, 10.5, -3.6], [3.2, 5.2, 6.6], "fur", None),
-        ("bicep_l", [-9.2,  5.0, -2.8], [3.4, 5.6, 5  ], "fur", None),
-        ("fore_l",  [-9.8,  0.8, -2.8], [3.4, 4.4, 4.6], "fur", None),
+        ("delt_l",  [ -9, 10, -4], [4, 5, 7], "fur", None),
+        ("bicep_l", [ -9,  5, -3], [4, 6, 5], "fur", None),
+        ("fore_l",  [-10,  1, -3], [4, 5, 5], "fur", None),
     ]),
     ("arm_r", [5, 13, 0], [0, 0, 11], [
-        ("delt_r",  [ 5.4, 10.5, -3.6], [3.2, 5.2, 6.6], "fur", None),
-        ("bicep_r", [ 5.8,  5.0, -2.8], [3.4, 5.6, 5  ], "fur", None),
-        ("fore_r",  [ 6.4,  0.8, -2.8], [3.4, 4.4, 4.6], "fur", None),
+        ("delt_r",  [  5, 10, -4], [4, 5, 7], "fur", None),
+        ("bicep_r", [  5,  5, -3], [4, 6, 5], "fur", None),
+        ("fore_r",  [  6,  1, -3], [4, 5, 5], "fur", None),
     ]),
     ("legs", [0, 0, 0], None, [
-        ("thigh_l", [-4.2,  2.2,  0.5], [4,   4.2, 5  ], "fur", None),
-        ("thigh_r", [ 0.2,  2.2,  0.5], [4,   4.2, 5  ], "fur", None),
-        ("calf_l",  [-3.9,  0,    1.0], [3.4, 2.4, 4  ], "fur", None),
-        ("calf_r",  [ 0.5,  0,    1.0], [3.4, 2.4, 4  ], "fur", None),
+        ("thigh_l", [-4,  2,  0], [4, 4, 5], "fur", None),
+        ("thigh_r", [ 0,  2,  0], [4, 4, 5], "fur", None),
+        ("calf_l",  [-4,  0,  1], [3, 3, 4], "fur", None),
+        ("calf_r",  [ 1,  0,  1], [3, 3, 4], "fur", None),
     ]),
-    ("head", [0, 14, -4], None, [
-        ("head",    [-2.8, 13.8, -8.5], [5.6, 5.2, 5  ], "fur", None),
-        ("snout",   [-1.1, 14.2,-10.0], [2.2, 2.2, 1.6], "snout", None),
-        ("ear_l",   [-2.6, 19.0, -7.0], [1.9, 3,   1.2], "fur", None),
-        ("ear_r",   [ 0.7, 19.0, -7.0], [1.9, 3,   1.2], "fur", None),
+    ("head", [0, 15, -5], None, [
+        ("head",    [-3, 14,  -9], [6, 5, 5], "fur", None),
+        ("snout",   [-1, 14, -10], [2, 2, 1], "snout", None),
+        ("ear_l",   [-3, 19,  -7], [2, 3, 1], "fur", None),
+        ("ear_r",   [ 1, 19,  -7], [2, 3, 1], "fur", None),
     ]),
-    ("tail", [0, 9, 4.5], [-28, 0, 0], [
-        ("tail_lo", [-2.5,  9.0,  4.2], [5,   7,   3.5], "tail", "tail_lt"),
-        ("tail_up", [-4.5, 15.0,  2.8], [9,   8,   6  ], "tail", "tail_lt"),
+    ("tail", [0, 9, 5], [-28, 0, 0], [
+        ("tail_lo", [-2,  9,  4], [4, 7, 4], "tail", "tail_lt"),
+        ("tail_up", [-4, 15,  3], [8, 8, 6], "tail", "tail_lt"),
     ]),
 ]
 
 NUT = [
     ("nut", [0, 0, 0], None, [
-        ("shell", [-1.5, 0,   -1.5], [3, 3,   3], "nut", None),
-        ("cap",   [-2.0, 2.8, -2.0], [4, 1.5, 4], "nut_cap", None),
+        ("shell", [-1, 0, -1], [2, 3, 2], "nut", None),
+        ("cap",   [-2, 3, -2], [4, 1, 4], "nut_cap", None),
     ]),
 ]
 
@@ -250,7 +250,8 @@ def geometry(ident, bones, uvs, size=None):
         if rot:
             bone["rotation"] = rot
         out.append(bone)
-    tall = max(o[1] + s[1] for _, _, _, bs in bones for _, o, s, _, _ in bs)
+    tall = max(o[1] + s[1] for name, _, _, bs in bones if name != "tail"
+               for _, o, s, _, _ in bs)
     return {
         "description": {
             "identifier": f"geometry.{ident}",
@@ -265,8 +266,16 @@ def geometry(ident, bones, uvs, size=None):
 def build(ident, bones, buff, size=None):
     size = size or TEX
     boxes = [b for _, _, _, bs in bones for b in bs]
+    for name, origin, dims, _, _ in boxes:
+        if any(float(v) != int(v) for v in dims):
+            raise SystemExit(
+                f"{ident}: box '{name}' has a fractional size {dims}.\n"
+                "Box sizes must be whole units -- Minecraft wraps the texture "
+                "using the real size, so a fractional box samples the wrong "
+                "pixels and the face disappears in game.")
     uvs = pack(boxes, size)
     img = Img(size)
+    img.rect(0, 0, size, size, C["fur"])
     paint(img, boxes, uvs, buff)
     img.write(os.path.join(RP, "textures", "entity", f"{ident}.png"))
     geo, tall = geometry(ident, bones, uvs, size)
@@ -296,6 +305,23 @@ def write_viewer(models):
     return out
 
 
+def write_scales(scales):
+    """Push the computed scale values into the behaviour pack entity."""
+    path = os.path.join(HERE, "squirrel", "BP", "entities", "squirrel.json")
+    if not os.path.exists(path):
+        return None
+    d = json.load(open(path))
+    groups = d["minecraft:entity"]["component_groups"]
+    for group, ident in (("pets:small", "squirrel_scrawny"), ("pets:giant", "squirrel_buff")):
+        groups[group]["minecraft:scale"]["value"] = round(scales[ident], 3)
+        w, h = HITBOX[ident]
+        groups[group]["minecraft:collision_box"] = {"width": w, "height": h}
+    with open(path, "w") as fh:
+        json.dump(d, fh, indent=2)
+        fh.write("\n")
+    return path
+
+
 def main():
     scrawny, s_tall, s_wide = build("squirrel_scrawny", SCRAWNY, buff=False)
     buff,    b_tall, b_wide = build("squirrel_buff",    BUFF,    buff=True)
@@ -323,7 +349,10 @@ def main():
     print(f"buff    : {b_tall:.1f} units tall, {b_wide:.1f} wide  -> scale {b_scale:.2f} = {b_tall * b_scale / 16:.2f} blocks tall, {b_wide * b_scale / 16:.2f} wide")
     view = write_viewer([("squirrel_scrawny", scrawny, s_tall, s_wide, s_scale),
                          ("squirrel_buff",    buff,    b_tall, b_wide, b_scale)])
+    bp = write_scales({"squirrel_scrawny": s_scale, "squirrel_buff": b_scale})
     print(f"wrote {path}")
+    if bp:
+        print(f"wrote {bp}   (scale + collision box)")
     print(f"wrote {view}   <-- open this in a browser")
 
 
