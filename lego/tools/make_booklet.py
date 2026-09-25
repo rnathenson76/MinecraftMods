@@ -14,6 +14,33 @@ COL, PARTS = D["colors"], D["parts"]
 E = html.escape
 
 
+def autocrop(name, margin=24):
+    """Trim the white border off a render (idempotent). Returns (w, h)."""
+    from PIL import Image, ImageChops
+    f = os.path.join(BOOK, "img", name)
+    im = Image.open(f).convert("RGB")
+    bbox = ImageChops.difference(im, Image.new("RGB", im.size, (255, 255, 255))).getbbox()
+    if bbox:
+        l, t, r, b = bbox
+        box = (max(0, l - margin), max(0, t - margin), min(im.width, r + margin), min(im.height, b + margin))
+        if box != (0, 0, im.width, im.height):
+            im = im.crop(box)
+            im.save(f, "WEBP", quality=88)
+    return im.size
+
+
+SIZE = {}
+for n in sorted(os.listdir(os.path.join(BOOK, "img"))):
+    if n.startswith(("step_", "hero_")):
+        SIZE[n] = autocrop(n)
+
+
+def img(name, alt, cls="shot", lazy=True):
+    w, h = SIZE[name]
+    lz = ' loading="lazy"' if lazy else ""
+    return f'<img class="{cls}" src="img/{name}" alt="{E(alt)}" width="{w}" height="{h}"{lz}>'
+
+
 def part_img(part, color):
     f = os.path.join(BOOK, "img", f"part_{part}_{color}.webp")
     if not os.path.exists(f):
@@ -25,6 +52,14 @@ IMG = {}
 for model in D["bom"]:
     for r in D["bom"][model]:
         IMG[(r["part"], r["color"])] = part_img(r["part"], r["color"])
+
+
+def pk(color):
+    return "any" if color < 0 else str(color)
+
+
+def part_vars():
+    return ":root{" + "".join(f"--p-{part}-{pk(col)}:url({url});" for (part, col), url in IMG.items() if url) + "}"
 
 
 def swatch(color):
@@ -42,7 +77,7 @@ def callout(parts):
         name = PARTS[p["part"]]["name"]
         cells.append(
             f'<figure class="pc" title="{E(name)}, {E(c["name"])}">'
-            f'<img src="{IMG[(p["part"], p["color"])]}" alt="{E(name)} in {E(c["name"])}" width="110" height="90">'
+            f'<span class="pi" style="background-image:var(--p-{p["part"]}-{pk(p["color"])})" role="img" aria-label="{E(name)} in {E(c["name"])}"></span>'
             f'<figcaption><b>{p["qty"]}x</b><span>{E(c["name"] if p["color"] >= 0 else "any colour")}</span></figcaption></figure>')
     return f'<div class="callout">{"".join(cells)}</div>'
 
@@ -63,7 +98,7 @@ def bom_table(model):
             blc = f" · colour {r['bl_color']}" if r["bl_color"] is not None else ""
             out.append(
                 f'<tr><td class="ck"><input type="checkbox" id="ck-{key}" data-k="{key}" aria-label="Got these"></td>'
-                f'<td class="im"><img src="{IMG[(r["part"], r["color"])]}" alt="" width="66" height="54" loading="lazy"></td>'
+                f'<td class="im"><span class="pi sm" style="background-image:var(--p-{r["part"]}-{pk(r["color"])})"></span></td>'
                 f'<td class="q">{r["qty"]}x</td><td>{E(r["name"])}</td>'
                 f'<td class="id">{E(r["bl"])}{blc}</td></tr>')
     return f'<div class="tw"><table class="bom"><tbody>{"".join(out)}</tbody></table></div>'
@@ -78,15 +113,14 @@ def steps_html(model):
         if s["section"] != section:
             section = s["section"]
             sub = s["asm"] in ("scrawny_tail", "buff_tail", "buff_arm_l", "buff_arm_r") and s["kind"] == "build"
-            out.append(f'<h3 class="sec{" subbuild" if sub else ""}" id="{model}-{n}">{E(section.split(": ", 1)[-1])}'
+            out.append(f'<h3 class="sec{" subbuild" if sub else ""}" id="{model}-{n}">{E(section.split(": ", 1)[-1].capitalize())}'
                        f'{"<small>separate sub-build</small>" if sub else ""}</h3>')
         note = f'<p class="note">{E(s["note"])}</p>' if s.get("note") else ""
         prog = f'<span class="prog">{E(s["sub"])}</span>' if s.get("sub") else ""
         out.append(
             f'<article class="step{" attach" if s["kind"] == "attach" else ""}">'
-            f'<div class="sn">{n}</div>{prog}{callout(s["parts"])}{note}'
-            f'<img class="shot" src="img/step_{i + 1:03d}.webp" alt="Step {n}" width="960" height="720" loading="lazy">'
-            f'</article>')
+            f'<div class="side"><div class="sn">{n}</div>{callout(s["parts"])}{note}</div>{prog}'
+            f'<div class="pic">{img(f"step_{i + 1:03d}.webp", f"Step {n}")}</div></article>')
     return "\n".join(out)
 
 
@@ -129,7 +163,7 @@ h2 {{ font-size:34px; color:var(--fur); }}
 p {{ margin:0; max-width:65ch; }}
 .eyebrow {{ font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--grass); }}
 header.cover {{ display:grid; gap:14px; }}
-.hero {{ width:100%; height:auto; background:var(--shot); border-radius:6px; }}
+.hero {{ display:block; max-width:100%; height:auto; margin-inline:auto; max-height:760px; width:auto; }}
 .facts {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }}
 .fact {{ border:2px solid var(--line); border-radius:6px; padding:14px 16px; display:grid; gap:4px; }}
 .fact b {{ font-family:var(--display); font-size:22px; }}
@@ -152,36 +186,43 @@ table.bom {{ border-collapse:collapse; width:100%; font-size:15px; }}
 .bom .n {{ font-family:var(--body); font-size:13px; color:var(--muted); font-weight:400; margin-left:6px; }}
 .bom .q {{ font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }}
 .bom .id {{ font-family:var(--mono); font-size:12.5px; color:var(--muted); white-space:nowrap; }}
-.bom .im img {{ display:block; background:#fff; border-radius:4px; }}
+
 .bom input {{ width:20px; height:20px; accent-color:var(--grass); }}
 .bom tr.got td {{ opacity:.45; }}
 details.model > summary {{ cursor:pointer; font-family:var(--display); font-size:20px; padding:8px 0; }}
 h3.sec {{ font-size:26px; padding:10px 0 4px; border-bottom:3px solid var(--fur); display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }}
 h3.sec small {{ font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }}
 h3.subbuild {{ border-bottom-color:var(--sub-edge); }}
-.step {{ position:relative; border-bottom:1px solid var(--line); padding-block:14px; display:grid; gap:10px; }}
+.step {{ position:relative; border-bottom:1px solid var(--line); padding-block:18px; display:grid; gap:14px;
+  grid-template-columns:minmax(0,260px) minmax(0,1fr); align-items:start; }}
+.step .side {{ display:grid; gap:10px; align-content:start; }}
+.step .pic {{ display:flex; justify-content:center; }}
+.step .shot {{ max-width:100%; max-height:560px; width:auto; height:auto; }}
+@media (max-width:720px) {{ .step {{ grid-template-columns:minmax(0,1fr); }} }}
 .step .sn {{ font-family:var(--display); font-weight:700; font-size:44px; line-height:1; }}
 .step .prog {{ position:absolute; right:0; top:18px; font-family:var(--mono); font-size:12px; color:var(--muted); }}
-.step .shot {{ width:100%; height:auto; background:var(--shot); border-radius:6px; }}
+
 .step.attach {{ background:var(--sub); border:2px solid var(--sub-edge); border-radius:8px; padding:14px; }}
 .callout {{ display:flex; flex-wrap:wrap; gap:6px; background:var(--callout); border:2px solid var(--callout-edge); border-radius:8px; padding:8px; width:fit-content; max-width:100%; }}
 .pc {{ margin:0; display:grid; justify-items:center; gap:0; width:110px; }}
-.pc img {{ background:#fff; border-radius:4px; width:110px; height:auto; }}
+.pi {{ display:block; width:110px; aspect-ratio:220/180; background:#fff center/contain no-repeat; border-radius:4px; }}
+.pi.sm {{ width:66px; }}
 .pc figcaption {{ display:grid; justify-items:center; font-size:13px; line-height:1.2; padding-top:3px; }}
 .pc b {{ font-size:17px; font-variant-numeric:tabular-nums; }}
 .pc span {{ color:var(--muted); font-size:11.5px; }}
 .note {{ font-size:17px; font-weight:700; }}
 .small {{ color:var(--muted); font-size:14px; }}
 code {{ font-family:var(--mono); font-size:.9em; }}
-@media (max-width:520px) {{ .pc {{ width:84px; }} .pc img {{ width:84px; }} .step .sn {{ font-size:34px; }} }}
+@media (max-width:520px) {{ .pc {{ width:84px; }} .pc .pi {{ width:84px; }} .step .sn {{ font-size:34px; }} }}
 </style>
+<style>{part_vars()}</style>
 
 <div class="wrap">
 <header class="cover">
   <span class="eyebrow">LEGO build · from the Minecraft squirrel mod</span>
   <h1>Squirrel Power Suit</h1>
   <p>Two builds in one box. The little scrawny squirrel is a Minecraft squirrel made of bricks. The buff squirrel is what he turns into when a monster shows up, and he's hollow: lift off his top half and the scrawny squirrel rides inside.</p>
-  <img class="hero" src="img/hero_pair.webp" alt="The buff squirrel standing next to the little scrawny squirrel" width="1600" height="1100">
+  {img("hero_pair.webp", "The buff squirrel standing next to the little scrawny squirrel", "hero", False)}
   <div class="facts">
     <div class="fact"><b>Scrawny squirrel</b><span>{st['scrawny']['parts']} parts · {nsteps['scrawny']} steps · {scr_in:.1f} in tall with tail up</span></div>
     <div class="fact"><b>Buff squirrel</b><span>{st['buff']['parts']} parts · {nsteps['buff']} steps · {buff_in:.1f} in tall · about {st['buff']['grams'] / 1000 * 2.2046:.1f} lb</span></div>
@@ -197,8 +238,8 @@ code {{ font-family:var(--mono); font-size:.9em; }}
   <h2>How the suit works</h2>
   <p>The buff squirrel splits at the chest. The bottom half is a cup the scrawny squirrel stands in, with his tail clicked straight up. The top half (chest, head and arms) drops on like a lid. Four little stud patches on the rim line it up and hold it; everywhere else on the rim is smooth tiles, so it lifts off without a fight.</p>
   <div class="two">
-    <figure><img class="hero" src="img/hero_suit.webp" alt="Scrawny squirrel standing inside the bottom half" width="1200" height="1000" loading="lazy"><figcaption>Scrawny squirrel in the bottom half, tail up.</figcaption></figure>
-    <figure><img class="hero" src="img/hero_lid.webp" alt="The top half lifted above the bottom half" width="1100" height="1500" loading="lazy"><figcaption>Lower the top half straight down.</figcaption></figure>
+    <figure>{img("hero_suit.webp", "Scrawny squirrel standing inside the bottom half", "hero", True)}<figcaption>Scrawny squirrel in the bottom half, tail up.</figcaption></figure>
+    <figure>{img("hero_lid.webp", "The top half lifted above the bottom half", "hero", True)}<figcaption>Lower the top half straight down.</figcaption></figure>
   </div>
 </section>
 
@@ -236,8 +277,8 @@ code {{ font-family:var(--mono); font-size:.9em; }}
 <section id="play">
   <h2>Posing</h2>
   <div class="two">
-    <figure><img class="hero" src="img/hero_buff.webp" alt="Buff squirrel flexing with arms raised" width="1200" height="1300" loading="lazy"><figcaption>Arms click out sideways from hanging down to straight out.</figcaption></figure>
-    <figure><img class="hero" src="img/hero_scrawny.webp" alt="Scrawny squirrel" width="1200" height="900" loading="lazy"><figcaption>Tails tilt back a few clicks. Swing the scrawny tail straight up before he suits up.</figcaption></figure>
+    <figure>{img("hero_buff.webp", "Buff squirrel flexing with arms raised", "hero", True)}<figcaption>Arms click out sideways from hanging down to straight out.</figcaption></figure>
+    <figure>{img("hero_scrawny.webp", "Scrawny squirrel", "hero", True)}<figcaption>Tails tilt back a few clicks. Swing the scrawny tail straight up before he suits up.</figcaption></figure>
   </div>
   <p class="small">Designed by a script that turns the Minecraft squirrel's boxes into bricks: <code>lego/tools/squirrel_lego.py</code>. Open <code>lego/models/*.mpd</code> in BrickLink Studio to spin the models in 3D.</p>
 </section>

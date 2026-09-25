@@ -870,9 +870,12 @@ def heroes(scrawny, buff):
         dict(name="hero_scrawny", new=lines(scrawny), az=-0.7, el=0.35, w=1200, h=900),
         dict(name="hero_buff", new=lines(buff, flex), az=-0.55, el=0.3, w=1200, h=1300),
         dict(name="hero_pair", new=lines(buff) + lines(scrawny, None, beside), az=-0.5, el=0.3, w=1600, h=1100),
-        dict(name="hero_suit", old=lines([a for a in buff if a.name in lifted], None, lifted),
+        dict(name="hero_suit", new=lines([a for a in buff if a.name in ("buff_lower", "buff_tail")]) +
+             lines(scrawny, {"scrawny_tail": SUIT["tail_angle"]}, ride), az=-0.5, el=0.75, w=1200, h=1000),
+        dict(name="hero_lid", old=lines([a for a in buff if a.name in lifted], None,
+                                        {n: (0, -420, 0) for n in lifted}),
              new=lines([a for a in buff if a.name not in lifted]) +
-             lines(scrawny, {"scrawny_tail": SUIT["tail_angle"]}, ride), az=-0.75, el=0.55, w=1200, h=1300),
+             lines(scrawny, {"scrawny_tail": SUIT["tail_angle"]}, ride), az=-0.6, el=0.45, w=1100, h=1500),
     ]
 
 
