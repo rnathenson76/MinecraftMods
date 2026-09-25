@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Squirrel step renderer</title>
+<!-- Served from a folder that holds node_modules/three and lib/ (the LDraw parts
+     library: lib/parts, lib/p). render.mjs drives this page headlessly. -->
+<script type="importmap">
+{ "imports": { "three": "/node_modules/three/build/three.module.js",
+               "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+<style>body{margin:0;background:#fff}</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+import { LDrawLoader } from 'three/addons/loaders/LDrawLoader.js';
+import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawConditionalLineMaterial.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+scene.add(sun);
+const camera = new THREE.PerspectiveCamera(22, 1, 1, 100000);
+
+const loader = new LDrawLoader();
+loader.setConditionalLineMaterial(LDrawConditionalLineMaterial);
+loader.setPartsLibraryPath('/lib/');
+loader.smoothNormals = true;
+
+function hexLerp(hex, t) {
+  const c = new THREE.Color(hex).lerp(new THREE.Color(0xffffff), t);
+  return '#' + c.getHexString();
+}
+
+window.init = async (colors) => {
+  // colours: real ones, plus a faded copy (code + 1000) for parts from earlier steps
+  const lines = [];
+  for (const [code, c] of Object.entries(colors)) {
+    if (+code < 0) continue;
+    lines.push(`0 !COLOUR C${code} CODE ${code} VALUE ${c.hex} EDGE ${+code === 0 ? '#595959' : '#333333'}`);
+    lines.push(`0 !COLOUR F${code} CODE ${1000 + +code} VALUE ${hexLerp(c.hex, 0.55)} EDGE #BBBBBB`);
+  }
+  lines.push('0 !COLOUR Main_Colour CODE 16 VALUE #7F7F7F EDGE #333333');
+  lines.push('0 !COLOUR Edge_Colour CODE 24 VALUE #7F7F7F EDGE #333333');
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  await loader.preloadMaterials(URL.createObjectURL(blob));
+  return true;
+};
+
+function parse(text) {
+  return new Promise((res, rej) => loader.parse(text, res, rej));
+}
+
+let current = [];
+function clear() { for (const g of current) scene.remove(g); current = []; }
+
+function frame(box, az, el, w, h, minRadius) {
+  const sphere = box.getBoundingSphere(new THREE.Sphere());
+  const r = Math.max(sphere.radius, minRadius || 0);
+  const dir = new THREE.Vector3(Math.sin(az) * Math.cos(el), -Math.sin(el), -Math.cos(az) * Math.cos(el));
+  // LDraw: -Y is up, the squirrels face -Z
+  camera.aspect = w / h;
+  const fov = THREE.MathUtils.degToRad(camera.fov);
+  const fit = Math.min(1, camera.aspect);
+  const dist = r / Math.sin(fov / 2) / fit * 1.02;
+  camera.position.copy(sphere.center).addScaledVector(dir, dist);
+  camera.up.set(0, -1, 0);
+  camera.lookAt(sphere.center);
+  camera.near = dist / 20; camera.far = dist * 5;
+  camera.updateProjectionMatrix();
+  sun.position.copy(camera.position).add(new THREE.Vector3(-r * 2, -r * 4, -r)); sun.target.position.copy(sphere.center);
+}
+
+function setIdMaterials(group, color, store) {
+  group.traverse(o => {
+    if (o.isLineSegments) { store.push([o, 'vis', o.visible]); o.visible = false; }
+    else if (o.isMesh) { store.push([o, 'mat', o.material]); o.material = new THREE.MeshBasicMaterial({ color }); }
+  });
+}
+function restore(store) { for (const [o, k, v] of store) { if (k === 'vis') o.visible = v; else o.material = v; } }
+
+// How much of the new parts can the camera see from this angle?
+function visibleNew(oldG, newG, box, az, el, minR) {
+  const store = [];
+  setIdMaterials(oldG, 0x000000, store); setIdMaterials(newG, 0xffffff, store);
+  const bg = scene.background; scene.background = new THREE.Color(0x000000);
+  const tm = renderer.toneMapping; renderer.toneMapping = THREE.NoToneMapping;
+  renderer.setSize(200, 160); frame(box, az, el, 200, 160, minR);
+  renderer.render(scene, camera);
+  const gl = renderer.getContext(); const px = new Uint8Array(200 * 160 * 4);
+  gl.readPixels(0, 0, 200, 160, gl.RGBA, gl.UNSIGNED_BYTE, px);
+  let n = 0; for (let i = 0; i < px.length; i += 4) if (px[i] > 128) n++;
+  restore(store); scene.background = bg; renderer.toneMapping = tm;
+  return n;
+}
+
+// Render one picture. job = {old, new, w, h, az?, el?, views?, minRadius?, fitNew?}
+window.renderJob = async (job) => {
+  clear();
+  const oldG = await parse(job.old || '0 empty');
+  const newG = await parse(job.new || '0 empty');
+  current = [oldG, newG]; scene.add(oldG); scene.add(newG);
+  const box = new THREE.Box3().setFromObject(oldG).union(new THREE.Box3().setFromObject(newG));
+  let az = job.az ?? -0.6, el = job.el ?? 0.5, chosen = null;
+  if (job.views) {
+    let best = -1;
+    for (const v of job.views) {
+      const n = visibleNew(oldG, newG, box, v[0], v[1], job.minRadius) * (v[2] || 1);
+      if (n > best) { best = n; az = v[0]; el = v[1]; chosen = v; }
+    }
+  }
+  renderer.setSize(job.w, job.h);
+  frame(box, az, el, job.w, job.h, job.minRadius);
+  renderer.render(scene, camera);
+  return { url: renderer.domElement.toDataURL(job.type || 'image/webp', 0.9), view: chosen };
+};
+window.ready = true;
+</script>
+</body>
+</html>

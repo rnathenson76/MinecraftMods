@@ -53,6 +53,8 @@ BUFF_MC = [
     ("legs", [0, 0, 0], None, [
         ("thigh_l", [-4, 2, 0], [4, 4, 5], "fur", None), ("thigh_r", [0, 2, 0], [4, 4, 5], "fur", None),
         ("calf_l", [-4, 0, 1], [3, 3, 4], "fur", None), ("calf_r", [1, 0, 1], [3, 3, 4], "fur", None)]),
+    ("feet", [0, 0, 0], None, [   # LEGO-only: big feet so the heavy chest can't tip him over
+        ("foot_l", [-4, 0, -2], [3, 1, 3], "fur", None), ("foot_r", [1, 0, -2], [3, 1, 3], "fur", None)]),
     ("head", [0, 15, -5], None, [
         ("head", [-3, 14, -9], [6, 5, 5], "fur", None), ("snout", [-1, 14, -10], [2, 2, 1], "snout", None),
         ("ear_l", [-3, 19, -7], [2, 3, 1], "fur", None), ("ear_r", [1, 19, -7], [2, 3, 1], "fur", None)]),
@@ -223,11 +225,13 @@ class Assembly:
         self.cells = set()
         for b in boxes:
             self.cells |= b.cells()
+        self.solid = set(self.cells)       # before hollowing: what the repair step may refill
         if hollow:
             self.cells = hollowed(self.cells, hollow)
         self.specials = []     # Placed joint parts
         self.parts = []
         self.joint = None      # dict(axis, point, angle, parent) -- how this hangs on its parent
+        self.studs_up = set()  # top cells that must keep studs even with nothing above (lid locators)
 
     def paint(self):
         self.color = {}
@@ -246,18 +250,19 @@ class Assembly:
             self.color[c] = MC2LEGO[best[1]] if best else ANY
 
 
-def hollowed(cells, wall):
-    """Keep only cells within `wall` studs (or 3*wall plates) of the outside."""
-    keep = set()
+def hollowed(cells, wall, keep=frozenset()):
+    """Keep only cells within `wall` studs (or 3*wall plates) of the outside, plus `keep`."""
+    out = set()
     for c in cells:
         x, y, z = c
-        near = any((x + d, y, z) not in cells or (x - d, y, z) not in cells or
-                   (x, y, z + d) not in cells or (x, y, z - d) not in cells for d in range(1, wall + 1))
+        near = c in keep or any((x + d, y, z) not in cells or (x - d, y, z) not in cells or
+                                (x, y, z + d) not in cells or (x, y, z - d) not in cells
+                                for d in range(1, wall + 1))
         near = near or any((x, y + d, z) not in cells or (x, y - d, z) not in cells
                            for d in range(1, 3 * wall + 1))
         if near:
-            keep.add(c)
-    return keep
+            out.add(c)
+    return out
 
 
 # ================================================================ tiler
@@ -281,7 +286,7 @@ def fits(asm, occ, x0, z0, w, d, y, h, need_color):
 
 
 def top_exposed(asm, c):
-    return (c[0], c[1] + 1, c[2]) not in asm.cells
+    return (c[0], c[1] + 1, c[2]) not in asm.cells and c not in asm.studs_up
 
 
 def tile_layer(asm, occ, y, below, rng, style):
@@ -486,7 +491,7 @@ def collisions(moving, fixed, deg):
             for oy in (-3, 3):
                 for oz in (-7, 7):
                     q = ldu_to_cell(apply(M, j["point"], (cx + ox, cy + oy, cz + oz)))
-                    if q in fixed.cells:
+                    if q in fixed:
                         hit.add(q)
     return hit
 
@@ -514,20 +519,63 @@ def make_scrawny(H=1.5):
     return [main, tail]
 
 
-def make_buff(H=1.5):
+def posed_cells(asms, angles=None):
+    """Grid cells a whole model fills, with each hinged part at its pose."""
+    out = set()
+    for a in asms:
+        if not a.joint:
+            out |= a.cells
+            continue
+        ang = (angles or {}).get(a.name, a.joint["angle"])
+        M = rot_matrix(a.joint["axis"], ang)
+        for c in a.cells:
+            cx, cy, cz = cell_center_ldu(c)
+            for ox in (-5, 5):
+                for oy in (-2, 2):
+                    for oz in (-5, 5):
+                        out.add(ldu_to_cell(apply(M, a.joint["point"], (cx + ox, cy + oy, cz + oz))))
+    return out
+
+
+# Where the scrawny squirrel rides inside the buff one (found by searching every
+# position; see README). He stands facing forward with his tail swung straight up.
+SUIT = dict(scrawny_scale=1.0, tail_angle=0, offset=(-2, 34, -9), split=52)
+
+
+def suit_cavity(suit):
+    """The hollow the scrawny squirrel sits in, open at the split line so the
+    top half lifts straight off and he drops straight in."""
+    sc = posed_cells(make_scrawny(suit["scrawny_scale"]), {"scrawny_tail": suit["tail_angle"]})
+    mn = [min(c[i] for c in sc) for i in range(3)]
+    ox, oy, oz = suit["offset"]
+    sc = {(x - mn[0] + ox, y - mn[1] + oy, z - mn[2] + oz) for x, y, z in sc}
+    cols = collections.defaultdict(list)
+    for x, y, z in sc:
+        cols[(x, z)].append(y)
+    S = suit["split"]
+    cav = set()
+    for (x, z), ys in cols.items():
+        for y in range(min(min(ys), S), max(max(ys), S - 1) + 1):
+            cav.add((x, y, z))
+    return cav, sc
+
+
+def make_buff(H=1.5, suit=None):
     V = H * 2.5
     def boxes(bone, **kw):
         return [Box(n, o, s, c, b, H, V, **kw) for (bn, _, _, bs) in BUFF_MC
                 if bn in bone for (n, o, s, c, b) in bs]
-    main = Assembly("buff_body", "Body", boxes({"body", "legs", "head"}), buff=True)
+    main = Assembly("buff_body", "Body", boxes({"body", "legs", "feet", "head"}), buff=True)
     chest = [b for b in main.boxes if b.name == "chest"][0]
     asms = [main]
 
     # ---- arms: click-hinge bricks at the shoulder, arms pushed out 1 stud to make room
-    pivot_y = 13 * V                                # plates
-    top = round(pivot_y + 1.25)                     # hinge brick top (axis is 1.25 plates below)
+    # Minecraft pivots the arm 13 units up; LEGO puts the hinge just under the top of
+    # the shoulder so the arm can swing right up without the shoulder hitting the chest.
+    delt = [b for b in boxes({"arm_l"}) if b.name == "delt_l"][0]
+    top = delt.y1 - 1                               # hinge brick top (axis is 1.25 plates below)
     ly = top - 3
-    arm_z = [-4, -2, 0, 2]
+    arm_z = [-6, -4, -2, 0, 2, 4] if H >= 2 else [-4, -2, 0, 2]
     for side, bone, sx in (("l", "arm_l", -1), ("r", "arm_r", 1)):
         arm = Assembly(f"buff_arm_{side}", "Left arm" if side == "l" else "Right arm",
                        boxes({bone}, dx=sx), buff=True, hollow=2)
@@ -551,7 +599,7 @@ def make_buff(H=1.5):
         asms.append(arm)
 
     # ---- tail: six click-hinge bricks across the back
-    tl = Box(*BUFF_MC[5][3][0], H, V)
+    tl = Box(*[b for b in BUFF_MC if b[0] == "tail"][0][3][0], H, V)
     zb = chest.z1
     top = round(9 * V + 1.25)
     ly = top - 3
@@ -566,9 +614,49 @@ def make_buff(H=1.5):
                                     note="tail hinge"))
         tail.cells |= {(x, ly + k, z) for z in (zb + 1, zb + 2) for k in range(3)}
     tail.joint = dict(axis="x", point=(0, -8 * top + 10, 20 * zb + 10), angle=-28,
-                      range=(-60, 5), parent=main.name, label="tail")
+                      range=(-70, -5), parent=main.name, label="tail")
     asms.append(tail)
+    if suit:
+        asms = make_suit(asms, suit)
     return asms
+
+
+def make_suit(asms, suit):
+    """Hollow the buff body out and split it into a bottom half and a lid."""
+    main = asms[0]
+    cav, rider = suit_cavity(suit)
+    special_cells = {c for sp in main.specials for c in sp.cells}
+    assert not cav & special_cells, "scrawny would hit a hinge"
+    assert cav <= main.cells, "scrawny pokes out of the buff body"
+    near_special = {(x + dx, y + dy, z + dz) for x, y, z in special_cells
+                    for dx in range(-2, 3) for dy in range(-3, 4) for dz in range(-2, 3)}
+    legs = {c for b in main.boxes if b.name.startswith(("thigh", "calf", "foot")) for c in b.cells()}
+    body = main.cells - cav
+    body = hollowed(body, 2, keep=(near_special | legs) & body)
+    S = suit["split"]
+    lower = Assembly("buff_lower", "Bottom half", main.boxes, buff=True)
+    lid = Assembly("buff_lid", "Top half (the lid)", main.boxes, buff=True)
+    lower.cells = {c for c in body if c[1] < S}
+    lid.cells = {c for c in body if c[1] >= S}
+    solid = main.cells - cav
+    lower.solid = {c for c in solid if c[1] < S}
+    lid.solid = {c for c in solid if c[1] >= S}
+    for sp in main.specials:
+        (lid if sp.y0 >= S else lower).specials.append(sp)
+        sp.asm = (lid if sp.y0 >= S else lower).name
+    # four 2x2 stud patches line the lid up; everything else on the rim is tiled
+    ring = {(c[0], c[2]) for c in lower.cells if c[1] == S - 1} & {(c[0], c[2]) for c in lid.cells if c[1] == S}
+    squares = [(x, z) for (x, z) in ring if {(x + 1, z), (x, z + 1), (x + 1, z + 1)} <= ring]
+    xs = [q[0] for q in ring]; zs = [q[1] for q in ring]
+    for cx, cz in ((min(xs), min(zs)), (max(xs), min(zs)), (min(xs), max(zs)), (max(xs), max(zs))):
+        best = min(squares, key=lambda q: abs(q[0] + 0.5 - cx) + abs(q[1] + 0.5 - cz))
+        for dx in (0, 1):
+            for dz in (0, 1):
+                lower.studs_up.add((best[0] + dx, S - 1, best[1] + dz))
+    for a in asms[1:]:
+        a.joint["parent"] = lid.name if a.name.startswith("buff_arm") else lower.name
+    lid.rider, lower.rider = rider, rider
+    return [lower, lid] + asms[1:]
 
 
 # ============================================================== reporting
@@ -600,9 +688,9 @@ def summary(model, asms):
         extra = "" if len(comps) == 1 else f"  !! {len(comps)} separate pieces: sizes {sorted(len(c) for c in comps)}"
         print(f"   {a.name:16s} {len(a.parts):4d} parts, {len(a.cells):5d} cells{extra}")
         if a.joint:
-            parent = [b for b in asms if b.name == a.joint["parent"]][0]
+            fixed = set().union(*[b.cells for b in asms if not b.joint])
             for deg in sorted({a.joint["angle"], *a.joint["range"]}):
-                hit = collisions(a, parent, deg)
+                hit = collisions(a, fixed, deg)
                 print(f"      pose {deg:+6.1f} deg: {'clear' if not hit else f'HITS body in {len(hit)} cells'}")
     n, com = mass_and_com(asms)
     fp = footprint(asms[0])
@@ -613,16 +701,248 @@ def summary(model, asms):
     return dict(com=(cx, cz), feet=((min(xs), max(xs) + 1), (min(zs), max(zs) + 1)))
 
 
-def build_model(model, asms, seed):
+def build_model(model, asms, seed, verbose=True):
     for a in asms:
-        a.paint()
-        tile_assembly(a, seed=seed)
+        for attempt in range(12):
+            a.paint()
+            tile_assembly(a, seed=seed + attempt)
+            comps = components(a)
+            if len(comps) == 1:
+                break
+            # Refill some of the hollow around every loose chunk so it has something to grab.
+            byuid = {p.uid: p for p in a.parts}
+            loose = [c for comp in sorted(comps, key=len)[:-1] for u in comp for c in byuid[u].cells]
+            grow = set()
+            for x, y, z in loose:
+                for dx in range(-2, 3):
+                    for dy in range(-3, 4):
+                        for dz in range(-2, 3):
+                            q = (x + dx, y + dy, z + dz)
+                            if q in a.solid and q not in a.cells:
+                                grow.add(q)
+            if verbose:
+                print(f"   {a.name}: {len(comps)} loose chunks -> refilling {len(grow)} hollow cells")
+            if not grow:
+                break
+            a.cells |= grow
     return asms
+
+
+# ============================================================== instructions
+MAX_STEP = 22          # most new parts in one step
+
+
+def sequence(asm, max_step=None):
+    """Split one sub-model into build steps, bottom to top. A part that hangs
+    under something (nothing to press it onto yet) waits until the part above it
+    is in, then goes on from underneath."""
+    MAX_STEP = max_step or (8 if asm.name.startswith("scrawny") else 16)
+    g = links(asm)
+    ymin = min(p.y0 for p in asm.parts)
+    placed, waiting, steps, cur = set(), [], [], []
+    by_layer = collections.defaultdict(list)
+    for p in asm.parts:
+        by_layer[p.y0].append(p)
+
+    def ok(p):
+        return p.y0 == ymin or any(u in placed for u in g[p.uid])
+
+    def flush():
+        nonlocal cur
+        if cur:
+            steps.append(cur)
+            cur = []
+
+    for y in sorted(by_layer):
+        pending = sorted(by_layer[y], key=lambda p: (min(c[2] for c in p.cells), min(c[0] for c in p.cells)))
+        pending += waiting
+        batch, waiting, progress = [], [], True
+        while progress:
+            progress = False
+            for p in list(pending):
+                if ok(p):
+                    batch.append(p); pending.remove(p); placed.add(p.uid); progress = True
+        waiting = pending
+        if len(cur) + len(batch) > MAX_STEP:
+            flush()
+        while len(batch) > MAX_STEP:
+            n = math.ceil(len(batch) / math.ceil(len(batch) / MAX_STEP))
+            steps.append(batch[:n]); batch = batch[n:]
+        cur += batch
+    flush()
+    if waiting:
+        raise SystemExit(f"{asm.name}: {len(waiting)} parts can never be attached")
+    for i, st in enumerate(steps):
+        for p in st:
+            p.step = i
+    return steps
+
+
+def xform(a, pose=True, move=(0, 0, 0), angles=None):
+    """World transform of a sub-model: (M, T, D) meaning p -> M (p - T) + T + D."""
+    if a.joint and pose:
+        ang = (angles or {}).get(a.name, a.joint["angle"])
+        return rot_matrix(a.joint["axis"], ang), a.joint["point"], move
+    return ID, (0, 0, 0), move
+
+
+def line(p, X, color=None):
+    M, T, D = X
+    pos = [v + d for v, d in zip(apply(M, T, p.pos), D)]
+    m = [[sum(M[i][k] * p.mat[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+    c = color if color is not None else (RENDER_ANY if p.color == ANY else p.color)
+    def f(v):
+        t = ("%.4f" % v).rstrip("0").rstrip(".")
+        return "0" if t in ("-0", "") else t
+    return "1 %d %s %s %s %s %s.dat" % (c, f(pos[0]), f(pos[1]), f(pos[2]),
+                                        " ".join(f(v) for r in m for v in r), p.part)
+
+
+def callout(parts):
+    c = collections.Counter((p.part, p.color) for p in parts)
+    return [dict(part=k[0], color=k[1], qty=v) for k, v in sorted(c.items(), key=lambda kv: (PARTS[kv[0][0]]["kind"], kv[0]))]
+
+
+def rider_move(buff):
+    """Where the scrawny squirrel's sub-models go when he rides inside."""
+    sc = posed_cells(make_scrawny(SUIT["scrawny_scale"]), {"scrawny_tail": SUIT["tail_angle"]})
+    mn = [min(c[i] for c in sc) for i in range(3)]
+    ox, oy, oz = SUIT["offset"]
+    return (20 * (ox - mn[0]), -8 * (oy - mn[1]), 20 * (oz - mn[2]))
+
+
+def instructions(scrawny, buff):
+    """Steps for the booklet: sub-builds, then 'attach' steps that put them together."""
+    A = {a.name: a for a in scrawny + buff}
+    book = []
+
+    def build(model, title, a, context=()):
+        steps = sequence(a)
+        done = []
+        for i, st in enumerate(steps):
+            book.append(dict(model=model, section=title, kind="build", asm=a.name,
+                             old=[line(p, xform(a, False)) for p in done],
+                             new=[line(p, xform(a, False)) for p in st], parts=callout(st),
+                             sub=f"{i + 1}/{len(steps)}"))
+            done += st
+
+    def attach(model, title, shown, new_asms, note, angles=None, moves=None):
+        moves = moves or {}
+        old = [line(p, xform(A[n], True, moves.get(n, (0, 0, 0)), angles)) for n in shown for p in A[n].parts]
+        new = [line(p, xform(A[n], True, moves.get(n, (0, 0, 0)), angles)) for n in new_asms for p in A[n].parts]
+        book.append(dict(model=model, section=title, kind="attach", asm=",".join(new_asms), old=old, new=new,
+                         parts=[], note=note))
+
+    build("scrawny", "Scrawny squirrel: body", A["scrawny_body"])
+    build("scrawny", "Scrawny squirrel: tail", A["scrawny_tail"])
+    attach("scrawny", "Scrawny squirrel: finish", ["scrawny_body"], ["scrawny_tail"],
+           "Click the tail hinge onto the back. Tilt it back one click to stand like the Minecraft squirrel.")
+    build("buff", "Buff squirrel: bottom half", A["buff_lower"])
+    build("buff", "Buff squirrel: tail", A["buff_tail"])
+    attach("buff", "Buff squirrel: bottom half", ["buff_lower"], ["buff_tail"],
+           "Click all eight tail hinges onto the back at once, then tilt the tail back.")
+    build("buff", "Buff squirrel: top half", A["buff_lid"])
+    build("buff", "Buff squirrel: left arm", A["buff_arm_l"])
+    build("buff", "Buff squirrel: right arm", A["buff_arm_r"])
+    attach("buff", "Buff squirrel: top half", ["buff_lid"], ["buff_arm_l", "buff_arm_r"],
+           "Click both arms onto the shoulders. They swing out sideways for flexing.")
+    mv = rider_move(buff)
+    attach("buff", "Suit up!", ["buff_lower", "buff_tail"], ["scrawny_body", "scrawny_tail"],
+           "Swing the scrawny squirrel's tail straight up and lower him into the bottom half.",
+           angles={"scrawny_tail": SUIT["tail_angle"]}, moves={"scrawny_body": mv, "scrawny_tail": mv})
+    attach("buff", "Suit up!", ["buff_lower", "buff_tail", "scrawny_body", "scrawny_tail"],
+           ["buff_lid", "buff_arm_l", "buff_arm_r"],
+           "Put the top half on. The four stud patches on the rim line it up and hold it.",
+           angles={"scrawny_tail": SUIT["tail_angle"]}, moves={"scrawny_body": mv, "scrawny_tail": mv})
+    return book
+
+
+def heroes(scrawny, buff):
+    """Showcase pictures for the cover and the finale."""
+    def lines(asms, angles=None, moves=None):
+        return [line(p, xform(a, True, (moves or {}).get(a.name, (0, 0, 0)), angles)) for a in asms for p in a.parts]
+    mv = rider_move(buff)
+    ride = {"scrawny_body": mv, "scrawny_tail": mv}
+    lifted = {n: (0, -160, 0) for n in ("buff_lid", "buff_arm_l", "buff_arm_r")}
+    flex = {"buff_arm_l": 70, "buff_arm_r": -70}
+    beside = {"scrawny_body": (560, 0, -120), "scrawny_tail": (560, 0, -120)}
+    return [
+        dict(name="hero_scrawny", new=lines(scrawny), az=-0.7, el=0.35, w=1200, h=900),
+        dict(name="hero_buff", new=lines(buff, flex), az=-0.55, el=0.3, w=1200, h=1300),
+        dict(name="hero_pair", new=lines(buff) + lines(scrawny, None, beside), az=-0.5, el=0.3, w=1600, h=1100),
+        dict(name="hero_suit", old=lines([a for a in buff if a.name in lifted], None, lifted),
+             new=lines([a for a in buff if a.name not in lifted]) +
+             lines(scrawny, {"scrawny_tail": SUIT["tail_angle"]}, ride), az=-0.75, el=0.55, w=1200, h=1300),
+    ]
+
+
+# ============================================================== files
+def write_mpd(path, title, asms, extra=()):
+    """Multi-part LDraw file: one submodel per sub-build, joints posed."""
+    out = [f"0 FILE {os.path.basename(path)}", f"0 {title}", f"0 Name: {os.path.basename(path)}",
+           "0 Author: generated by lego/tools/squirrel_lego.py", "0 !LDRAW_ORG Unofficial_Model", ""]
+    for a in asms:
+        M, T, D = xform(a)
+        t = [T[i] - sum(M[i][k] * T[k] for k in range(3)) + D[i] for i in range(3)]
+        out.append("1 16 %s %s %s %s %s.ldr" % tuple([*(round(v, 3) for v in t),
+                                                     " ".join(str(round(v, 5)) for r in M for v in r), a.name]))
+    out.append("0 STEP")
+    for a in asms:
+        out += ["", f"0 FILE {a.name}.ldr", f"0 {a.title}", f"0 Name: {a.name}.ldr"]
+        steps = sequence(a)
+        for st in steps:
+            out += [line(p, (ID, (0, 0, 0), (0, 0, 0))) for p in st]
+            out.append("0 STEP")
+    open(path, "w").write("\n".join(out) + "\n")
+
+
+def bom(asms):
+    c = collections.Counter((p.part, p.color) for a in asms for p in a.parts)
+    rows = []
+    for (part, col), n in sorted(c.items(), key=lambda kv: (PARTS[kv[0][0]]["kind"], COLORS[kv[0][1]][0], kv[0][0])):
+        P = PARTS[part]
+        rows.append(dict(part=part, bl=P["bl"], name=P["name"], color=col, color_name=COLORS[col][0],
+                         bl_color=COLORS[col][2], qty=n))
+    return rows
+
+
+def write_wanted(path, rows):
+    items = []
+    for r in rows:
+        col = f"<COLOR>{r['bl_color']}</COLOR>" if r["bl_color"] is not None else ""
+        items.append(f"<ITEM><ITEMTYPE>P</ITEMTYPE><ITEMID>{r['bl']}</ITEMID>{col}<MINQTY>{r['qty']}</MINQTY></ITEM>")
+    open(path, "w").write("<INVENTORY>\n" + "\n".join(items) + "\n</INVENTORY>\n")
+
+
+def write_all(scrawny, buff):
+    os.makedirs(os.path.join(HERE, "models"), exist_ok=True)
+    os.makedirs(os.path.join(HERE, "bricklink"), exist_ok=True)
+    write_mpd(os.path.join(HERE, "models", "scrawny_squirrel.mpd"), "Scrawny Squirrel", scrawny)
+    write_mpd(os.path.join(HERE, "models", "buff_squirrel.mpd"), "Buff Squirrel (power suit)", buff)
+    data = dict(colors={str(k): dict(name=v[0], hex=v[1], bl=v[2]) for k, v in COLORS.items()},
+                parts={k: dict(name=v["name"], bl=v["bl"], kind=v["kind"]) for k, v in PARTS.items()},
+                any_render=RENDER_ANY, bom={}, steps=instructions(scrawny, buff), stats={})
+    for name, asms in (("scrawny", scrawny), ("buff", buff)):
+        rows = bom(asms)
+        data["bom"][name] = rows
+        write_wanted(os.path.join(HERE, "bricklink", f"{name}_squirrel_wanted.xml"), rows)
+        n, com = mass_and_com(asms)
+        pts = posed_cells(asms)
+        data["stats"][name] = dict(parts=sum(r["qty"] for r in rows), grams=round(n * 0.096),
+                                   height_mm=round((max(c[1] for c in pts) + 1) * 3.2),
+                                   width_studs=max(c[0] for c in pts) - min(c[0] for c in pts) + 1,
+                                   length_studs=max(c[2] for c in pts) - min(c[2] for c in pts) + 1)
+    data["heroes"] = heroes(scrawny, buff)
+    json.dump(data, open(os.path.join(HERE, "booklet", "steps.json"), "w"))
+    return data
 
 
 if __name__ == "__main__":
     seed = int(sys.argv[1]) if len(sys.argv) > 1 else 1
-    s = build_model("scrawny", make_scrawny(), seed)
+    s = build_model("scrawny", make_scrawny(SUIT["scrawny_scale"]), seed)
     summary("scrawny", s)
-    b = build_model("buff", make_buff(), seed)
+    b = build_model("buff", make_buff(2.0, SUIT), seed)
     summary("buff", b)
+    os.makedirs(os.path.join(HERE, "booklet"), exist_ok=True)
+    d = write_all(s, b)
+    print(f"wrote models/, bricklink/, booklet/steps.json  ({len(d['steps'])} steps)", d["stats"])
