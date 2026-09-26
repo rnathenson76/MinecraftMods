@@ -6,8 +6,8 @@ The Minecraft squirrel from the squirrel mod (branch `claude/optimistic-pascal-6
 | | Scrawny squirrel | Buff squirrel |
 |---|---|---|
 | Scale | 1 stud per Minecraft unit | 2 studs per Minecraft unit |
-| Parts | ~112 | ~2,200 |
-| Size | 4 studs wide, ~4.5 in tall with tail up | ~14 in tall, ~7 lb |
+| Parts | ~112 | ~2,000 |
+| Size | 4 studs wide, ~4.5 in tall with tail up | ~14 in tall, ~6 lb |
 | Moves | tail clicks up/back | arms click out sideways (0–90°), tail clicks back |
 
 The buff squirrel is hollow and splits at the chest. The scrawny squirrel stands in
@@ -49,6 +49,9 @@ python3 lego/tools/make_booklet.py
   for the shoulder hinges, the shoulder hinge is at the top of the arm (so the arm can
   swing up without hitting the chest), tails sit 1 stud back for their hinges, and the
   buff squirrel got big feet. Without them his chest and head tip him onto his face.
+- The buff arms and tail are 85% of Minecraft size, shrunk toward their joints. That
+  roughly halves the load on the click hinges (arm ~295 g, tail ~350 g). Arms keep
+  2-stud hollow walls (they get grabbed); the tail has 1-stud walls.
 - The power-suit fit was found by searching every position, rotation and tail angle of
   the scrawny squirrel against the buff body with walls at least 1 stud thick. At the
   11 in size (1.5 studs/unit) the scrawny squirrel only fit if shrunk to 3 studs wide, so

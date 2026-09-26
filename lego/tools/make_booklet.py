@@ -247,6 +247,7 @@ code {{ font-family:var(--mono); font-size:.9em; }}
   <h2>Before you start</h2>
   <div class="colors">{"".join(f'<span>{swatch(int(k))} {E(v["name"])}</span>' for k, v in COL.items() if int(k) in (70, 308, 19, 84, 0, 15, -1))}</div>
   <ul class="tips">
+    <li><b>Test one arm first.</b> Build the left arm (it's a sub-build in the buff squirrel section), then stand six 1 x 2 hinge bricks with two fingers (30365) side by side on a plate and click the arm on. Raise it straight out. If it holds, build the rest. If it sags, tell Claude before going further.</li>
     <li><b>Grey in the pictures means any colour.</b> Those parts are hidden inside the walls, so use whatever you have lots of.</li>
     <li><b>Faded parts</b> in a picture are from earlier steps. The bright ones are what you add now.</li>
     <li><b>Pale boxes</b> are sub-builds: tails and arms get built on their own, then clicked on.</li>

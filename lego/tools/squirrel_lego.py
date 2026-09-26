@@ -560,10 +560,28 @@ def suit_cavity(suit):
     return cav, sc
 
 
+# LEGO-only: the arms and tail are 85% of Minecraft size, shrunk toward their joint,
+# so the click hinges only carry about half the strain (see README).
+SHRINK = {"arm_l": (0.85, (-5, 15, 0)), "arm_r": (0.85, (5, 15, 0)), "tail": (0.85, (0, 9, 4))}
+WALLS = {"arm": 2, "tail": 1}          # hollow-wall thickness in studs
+
+
+def shrunk(model):
+    out = []
+    for bn, piv, rot, bs in model:
+        if bn in SHRINK:
+            f, a = SHRINK[bn]
+            bs = [(n, [a[i] + (o[i] - a[i]) * f for i in range(3)], [v * f for v in s], c, b)
+                  for (n, o, s, c, b) in bs]
+        out.append((bn, piv, rot, bs))
+    return out
+
+
 def make_buff(H=1.5, suit=None):
     V = H * 2.5
+    mc = shrunk(BUFF_MC)
     def boxes(bone, **kw):
-        return [Box(n, o, s, c, b, H, V, **kw) for (bn, _, _, bs) in BUFF_MC
+        return [Box(n, o, s, c, b, H, V, **kw) for (bn, _, _, bs) in mc
                 if bn in bone for (n, o, s, c, b) in bs]
     main = Assembly("buff_body", "Body", boxes({"body", "legs", "feet", "head"}), buff=True)
     chest = [b for b in main.boxes if b.name == "chest"][0]
@@ -578,7 +596,7 @@ def make_buff(H=1.5, suit=None):
     arm_z = [-6, -4, -2, 0, 2, 4] if H >= 2 else [-4, -2, 0, 2]
     for side, bone, sx in (("l", "arm_l", -1), ("r", "arm_r", 1)):
         arm = Assembly(f"buff_arm_{side}", "Left arm" if side == "l" else "Right arm",
-                       boxes({bone}, dx=sx), buff=True, hollow=2)
+                       boxes({bone}, dx=sx), buff=True, hollow=WALLS["arm"])
         inner = chest.x0 if sx < 0 else chest.x1 - 1          # chest wall cell on this side
         a_cells = [inner, inner - sx]                          # two cells into the chest
         b_cells = [inner + 2 * sx, inner + 3 * sx]              # arm side, after 1-stud gap
@@ -599,11 +617,11 @@ def make_buff(H=1.5, suit=None):
         asms.append(arm)
 
     # ---- tail: six click-hinge bricks across the back
-    tl = Box(*[b for b in BUFF_MC if b[0] == "tail"][0][3][0], H, V)
+    tl = Box(*[b for b in mc if b[0] == "tail"][0][3][0], H, V)
     zb = chest.z1
     top = round(9 * V + 1.25)
     ly = top - 3
-    tail = Assembly("buff_tail", "Tail", boxes({"tail"}, dz=1, dy=ly - tl.y0), buff=True, hollow=2)
+    tail = Assembly("buff_tail", "Tail", boxes({"tail"}, dz=1, dy=ly - tl.y0), buff=True, hollow=WALLS["tail"])
     for x in range(tl.x0, tl.x1):
         cx = 20 * x + 10
         main.specials.append(Placed("30365", 0, {(x, ly + k, z) for z in (zb - 2, zb - 1) for k in range(3)},
@@ -840,7 +858,7 @@ def instructions(scrawny, buff):
     build("buff", "Buff squirrel: bottom half", A["buff_lower"])
     build("buff", "Buff squirrel: tail", A["buff_tail"])
     attach("buff", "Buff squirrel: bottom half", ["buff_lower"], ["buff_tail"],
-           "Click all eight tail hinges onto the back at once, then tilt the tail back.")
+           f"Click all {sum(1 for p in A['buff_tail'].specials)} tail hinges onto the back at once, then tilt the tail back.")
     build("buff", "Buff squirrel: top half", A["buff_lid"])
     build("buff", "Buff squirrel: left arm", A["buff_arm_l"])
     build("buff", "Buff squirrel: right arm", A["buff_arm_r"])
