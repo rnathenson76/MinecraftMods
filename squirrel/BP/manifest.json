@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Squirrel",
+    "description": "A tameable squirrel that grows 15x and throws nuts — Behavior Pack",
+    "uuid": "e52a7e34-eaf0-49ef-9763-666c93192514",
+    "version": [1, 0, 1],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "1d4ef302-6bfd-4a38-afbd-5489dbc70377",
+      "version": [1, 0, 1]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "c4394c53-dd3c-4664-9a19-8280972c1178",
+      "version": [1, 0, 1]
+    }
+  ]
+}
