@@ -319,6 +319,25 @@ def write_scales(scales):
     return path
 
 
+def stamp_version():
+    """Put the version in the pack's NAME, so the version you are running is
+    readable in Minecraft's pack list. Without this there is no way to tell a
+    stale pack from a fresh one -- the list just says "Squirrel" either way."""
+    out = []
+    for kind in ("BP", "RP"):
+        path = os.path.join(HERE, "squirrel", kind, "manifest.json")
+        if not os.path.exists(path):
+            continue
+        m = json.load(open(path))
+        v = ".".join(str(x) for x in m["header"]["version"])
+        m["header"]["name"] = f"Squirrel {v}"
+        with open(path, "w") as fh:
+            json.dump(m, fh, indent=2)
+            fh.write("\n")
+        out.append(f"{kind}: {m['header']['name']}")
+    return out
+
+
 def main():
     scrawny, s_tall, s_wide = build("squirrel_scrawny", SCRAWNY, buff=False)
     buff,    b_tall, b_wide = build("squirrel_buff",    BUFF,    buff=True)
@@ -350,6 +369,8 @@ def main():
     print(f"wrote {path}")
     if bp:
         print(f"wrote {bp}   (scale + collision box)")
+    for line in stamp_version():
+        print(f"stamped {line}")
     print(f"wrote {view}   <-- open this in a browser")
 
 

@@ -1,13 +1,13 @@
 {
   "format_version": 2,
   "header": {
-    "name": "Squirrel",
+    "name": "Squirrel 1.0.4",
     "description": "A tameable squirrel that grows 15x and throws nuts \u2014 Resource Pack",
     "uuid": "c4394c53-dd3c-4664-9a19-8280972c1178",
     "version": [
       1,
       0,
-      3
+      4
     ],
     "min_engine_version": [
       1,
@@ -22,7 +22,7 @@
       "version": [
         1,
         0,
-        3
+        4
       ]
     }
   ]
