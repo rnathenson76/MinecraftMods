@@ -65,9 +65,9 @@
           "attack_interval_min": 1.5,
           "attack_interval_max": 2.5,
           "attack_radius": 16,
-          "attack_radius_min": 3,
+          "attack_radius_min": 0,
           "burst_shots": 1,
-          "ranged_fov": 120,
+          "ranged_fov": 180,
           "speed_multiplier": 0.9,
           "target_in_sight_time": 0.2
         },
@@ -75,7 +75,7 @@
           "priority": 4,
           "speed_multiplier": 1.0,
           "track_target": true,
-          "reach_multiplier": 1.5
+          "reach_multiplier": 4.0
         }
       },
       "pets:wild": {

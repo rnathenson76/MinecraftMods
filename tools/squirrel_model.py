@@ -61,6 +61,9 @@ SCRAWNY = [
         ("snout",   [-1,  6, -9], [2, 2, 1], "snout", None),
         ("ear_l",   [-2, 10, -7], [1, 2, 1], "fur", None),
         ("ear_r",   [ 1, 10, -7], [1, 2, 1], "fur", None),
+        ("eye_l",   [-2,  8, -9], [1, 1, 1], "eye", None),
+        ("eye_r",   [ 1,  8, -9], [1, 1, 1], "eye", None),
+        ("nose",    [-1,  7,-10], [2, 1, 1], "nose", None),
     ]),
     ("tail", [0, 5, 4], [-22, 0, 0], [
         ("tail_lo", [-1,  5,  4], [2, 5, 2], "tail", "tail_lt"),
@@ -96,6 +99,11 @@ BUFF = [
         ("snout",   [-1, 14, -10], [2, 2, 1], "snout", None),
         ("ear_l",   [-3, 19,  -7], [2, 3, 1], "fur", None),
         ("ear_r",   [ 1, 19,  -7], [2, 3, 1], "fur", None),
+        ("eyew_l",  [-3, 16, -10], [2, 2, 1], "eye_lit", None),
+        ("eyew_r",  [ 1, 16, -10], [2, 2, 1], "eye_lit", None),
+        ("pupil_l", [-2, 16, -11], [1, 1, 1], "eye", None),
+        ("pupil_r", [ 1, 16, -11], [1, 1, 1], "eye", None),
+        ("nose",    [-1, 14, -11], [2, 1, 1], "nose", None),
     ]),
     ("tail", [0, 9, 5], [-28, 0, 0], [
         ("tail_lo", [-2,  9,  4], [4, 7, 4], "tail", "tail_lt"),
@@ -216,17 +224,6 @@ def paint(img, boxes, uvs, buff):
             img.rect(*f["down"], C[belly])
             fx, fy, fw, fh = f["front"]
             img.rect(fx, fy + fh // 2, fw, fh - fh // 2, C[belly])
-
-        # --- face ---
-        if name == "head":
-            fx, fy, fw, fh = f["front"]
-            ey = fy + max(1, fh // 3)
-            for ex in (fx + fw // 5, fx + fw - fw // 5 - 2):
-                img.rect(ex, ey, 2, 2, C["eye"])
-                img.rect(ex, ey, 1, 1, C["eye_lit"])
-        if name == "snout":
-            fx, fy, fw, fh = f["front"]
-            img.rect(fx + fw // 2 - 1, fy, 2, 1, C["nose"])
 
         # --- muscles (buff only) ---
         if buff and name in MUSCLE_SPLIT:
