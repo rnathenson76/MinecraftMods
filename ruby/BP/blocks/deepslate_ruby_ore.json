@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.10",
+  "minecraft:block": {
+    "description": {
+      "identifier": "gems:deepslate_ruby_ore",
+      "menu_category": {
+        "category": "nature"
+      }
+    },
+    "components": {
+      "minecraft:display_name": "Deepslate Ruby Ore",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "deepslate_ruby_ore",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:map_color": "#4a4247",
+      "minecraft:light_dampening": 15,
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 4.5
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 4.5
+      },
+      "minecraft:loot": "loot_tables/blocks/deepslate_ruby_ore.json",
+      "tag:stone": {},
+      "tag:minecraft:is_pickaxe_item_destructible": {},
+      "tag:minecraft:iron_tier_destructible": {}
+    }
+  }
+}

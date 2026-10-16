@@ -1,0 +1,39 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Ruby",
+    "description": "Ruby ore, gems and gear \u2014 Resource Pack (textures, names)",
+    "uuid": "a213bfdc-6761-4751-869f-15777a8071b7",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "1e6bec12-b619-4f20-9223-08162dba20d8",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "3c512a20-ccfa-4248-be68-5654a479dde1",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}
