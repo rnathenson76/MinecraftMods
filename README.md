@@ -1,103 +1,92 @@
-# Family Mods (Minecraft Bedrock Add-On)
+# Minecraft Mods
 
-Custom items for Minecraft, built here and played on the iPad. This is a
-**Bedrock Add-On**: a Behavior Pack (`BP/`, the rules/stats) plus a Resource
-Pack (`RP/`, the textures/names), zipped up and imported into Minecraft.
+Custom Minecraft Bedrock add-ons, built here on the computer and played on the
+iPad. Each mod is a **Behavior Pack** (the rules and stats) plus a **Resource
+Pack** (the textures and names), zipped into one `.mcaddon` file.
 
-## What's in it so far
+## The mods
 
-- **Obsidian Sword** (`familymods:obsidian_sword`) — hits as hard as
-  Sharpness 20, obsidian-purple blade, huge durability. Craft it with
-  2 obsidian + 1 stick, same shape as a normal sword recipe.
-- **Emerald Sword** (`familymods:emerald_sword`) — Adam's magic sword.
-  Hits living things for **20 hearts** (`minecraft:damage` = 40; 2 damage =
-  1 heart). The magic trick: the moment you **hold** it, whatever armour you're
-  wearing (and your off-hand item) is set aside and a full set of **Emerald
-  Armour + an Emerald Shield** appears on you — and the emerald gear *and the
-  sword itself* get every enchantment they can take, each at max level. Put the
-  sword away and the emerald gear vanishes and your **exact old armour goes
-  right back on**. Your old gear is remembered on you (it survives a relog) and
-  only ever moved back — never copied — so nothing duplicates. Craft the sword
-  with 2 emerald + 1 stick.
+Every mod is its **own separate pack** with its own UUIDs. They install,
+update, and uninstall independently — adding one can never disturb another.
 
-## How to build it into something Minecraft can open
+| Mod | What it is | File to install |
+|---|---|---|
+| **Family Mods** | Obsidian Sword, RPG launcher, Emerald Sword + armour | `dist/FamilyMods.mcaddon` |
+| **Chopper** | Rideable, flyable helicopter | `dist/Chopper.mcaddon` |
+| **Monster Truck** | Driveable truck — nitro, horn, climbs blocks | `dist/MonsterTruck.mcaddon` |
+| **Ruby** | Ruby ore, gems, blocks, sword and pickaxe | `dist/Ruby.mcaddon` |
+| **Squirrel** | Tameable squirrel that grows 15x and throws nuts | `dist/Squirrel.mcaddon` |
+| **Unfun** | Everything nerfed — grind for every stat | `dist/Unfun.mcaddon` |
+
+`lego/` isn't a Minecraft mod — it's a buildable LEGO squirrel with a rendered
+instruction booklet and a parts list.
+
+## Getting a mod onto the iPad
+
+**The built `.mcaddon` files are committed to this repo, in `dist/`.** You
+don't have to build anything to install one — they're ready to go, and the
+iPad can download one straight from GitHub without touching the computer.
+
+1. Get the `.mcaddon` onto the iPad — AirDrop is easiest; iCloud Drive,
+   Messages or email work too. Or open this repo on GitHub on the iPad and
+   download the file directly.
+2. Tap the file. Minecraft opens and imports it (both packs at once).
+3. In Minecraft: **Play → create or edit a world → Behavior Packs / Resource
+   Packs tabs → activate the mod** for that world. **Activate it in both
+   tabs** — a mod with only one half switched on is the usual reason a custom
+   item or mob turns up invisible or missing.
+4. Turn on cheats for that world while testing, so you can `/give` items and
+   use spawn eggs without hunting for ingredients.
+
+**Tip:** test in a spare creative world before adding a pack to a main
+survival world.
+
+## Building after you change something
 
 ```
-./scripts/build_mcpack.sh
+./scripts/build_all.sh        # every mod, into dist/
+./scripts/build_squirrel.sh   # or just one
 ```
 
-This creates `dist/FamilyMods.mcaddon` — **one file** that contains both
-packs.
+`build_all.sh` runs `tools/check_packs.py` first, which makes sure every mod
+still has UUIDs nothing else uses. That matters: if two packs share a UUID,
+Minecraft treats them as the same pack and installing one silently replaces
+the other, with no error to tell you.
 
-## How to get it onto the iPad and into the world
+Most changes are one number in one text file — no compiler, no install step
+beyond re-running a build script. Each mod's section below says which number
+does what.
 
-1. Get the `.mcaddon` file. Either way works:
-   - **From the Mac:** run the build script above, then AirDrop
-     `dist/FamilyMods.mcaddon` to the iPad (iCloud Drive / Messages / email
-     work too).
-   - **Straight from GitHub, no Mac needed:** the built `.mcaddon` files are
-     committed in `dist/`, so on the iPad you can open the repo in Safari,
-     tap the file, and download it. (If the repo is private, sign in to
-     GitHub on the iPad first.)
-2. Whichever way you got it, the file lands in the iPad's Files app.
-3. On the iPad, tap the `.mcaddon` file. Minecraft should open and say it
-   imported an add-on (it installs both packs automatically).
-4. In Minecraft: **Play → create or edit a world → Behavior Packs / Resource
-   Packs tabs → activate "Family Mods"** for that world.
-5. Turn on cheats for that world too (Settings → Cheats → ON) — you don't
-   *need* cheats to craft the sword, but it makes it easy to `/give` items
-   while testing without needing the exact ingredients.
-6. Load the world and either craft the sword normally, or (with cheats on)
-   run: `/give @s familymods:obsidian_sword`
-
-**Tip:** test in a spare/creative world first before adding the pack to his
-main survival world, in case something needs tweaking.
-
-## How to change something (e.g. make the sword hit even harder)
-
-Open `BP/items/obsidian_sword.json` and change the number next to
-`"minecraft:damage"`. Save, re-run the build script, re-send the
-`.mcaddon` to the iPad, done. Every change is just editing a number or word
-in one of these text files — no compiler, no install step beyond re-running
-the script.
+**Re-installing an update:** bump `version` in that mod's `BP/manifest.json`
+and `RP/manifest.json` so re-importing upgrades it in place. If an old copy
+seems stuck, delete the pack on the iPad and import the fresh file.
 
 ## Minecraft version
 
-Built and tested against **Minecraft Bedrock v26 (the 1.26.x add-on format)**.
-The item files use `"format_version": "1.26.10"`. If a future Minecraft update
-changes the item format again and items stop appearing, that version string
-(and the manifests' `min_engine_version`) is the first thing to update.
+Built against **Minecraft Bedrock v26 (the 1.26.x add-on format)**. If a
+future update changes the format and items stop appearing, the
+`format_version` strings and the manifests' `min_engine_version` are the first
+things to update.
 
-**Re-installing an update:** the pack version is bumped on each fix (see
-`version` in `BP/manifest.json` / `RP/manifest.json`), so re-importing the new
-`.mcaddon` upgrades it in place. If an old copy ever seems stuck, delete
-"Family Mods" from the pack list on the iPad and import the fresh file.
+## Family Mods — the shared pack (`BP/` + `RP/`)
 
-## Roadmap
+Three items share one pack here, because they were built before the
+one-mod-one-pack habit settled in:
 
-1. ✅ Obsidian Sword — custom item, damage/durability tuning, crafting recipe
-2. 🧪 Rocket-Propelled Grenade — throwable launcher item (`familymods:rpg`)
-   that fires a rocket entity (`familymods:rpg_rocket`) which explodes on
-   impact. Kid-chosen settings: explosion power 9, breaks blocks, causes
-   fire, rocket speed 13. Craft with 6 iron + 2 gunpowder + 1 blaze rod.
-   The tunable numbers live in `BP/entities/rpg_rocket.json`
-   (`minecraft:explode` power/breaks_blocks/causes_fire, and the projectile
-   `power` = flight speed). Currently in testing.
-3. Ideas for later: a custom mob/pet, a small JavaScript script for
-   something interactive. (The "custom block" idea grew into the Ruby mod,
-   which lives in its own pack — see below.)
-3. ✅ Emerald Sword — 20-heart hit, plus a Script-API "hold it and your armour
-   turns to (fully enchanted) emerald, put it away and your own armour comes
-   back" swap. Damage is one number in `BP/items/emerald_sword.json`
-   (`minecraft:damage`). The swap + enchant + restore logic is all in
-   `BP/scripts/main.js`. The armour's base strength is the `protection` number
-   in each `BP/items/emerald_*.json`. The green look is drawn by
-   `scripts/gen_emerald_textures.py` (re-run it, then rebuild, to change colours
-   or shapes).
-   - **Heads-up on the shield:** Minecraft only lets the *real* vanilla shield
-     do the block-the-hit crouch. Our Emerald Shield is cosmetic — it sits in
-     the off-hand and looks the part, but doesn't add the blocking move.
-4. Ideas for later: a custom block, a custom mob/pet, more interactive scripts.
+- **Obsidian Sword** (`familymods:obsidian_sword`) — hits as hard as
+  Sharpness 20, obsidian-purple blade, huge durability. Craft with 2 obsidian
+  + 1 stick. Damage is `"minecraft:damage"` in `BP/items/obsidian_sword.json`.
+- **Rocket-Propelled Grenade** (`familymods:rpg`) — fires a rocket that
+  explodes on impact. Explosion power 9, breaks blocks, causes fire, rocket
+  speed 13. Craft with 6 iron + 2 gunpowder + 1 blaze rod. Tunables are in
+  `BP/entities/rpg_rocket.json`.
+- **Emerald Sword** — 20-heart hit, plus a Script-API swap: hold it and your
+  armour turns to fully-enchanted emerald, put it away and your own armour
+  comes back. The swap logic is in `BP/scripts/main.js`; the green look is
+  drawn by `scripts/gen_emerald_textures.py`.
+  - **Heads-up on the shield:** only the *real* vanilla shield can do the
+    block-the-hit crouch. The Emerald Shield is cosmetic — it looks the part
+    in the off-hand but adds no blocking move.
 
 ## Chopper — a SEPARATE mod (its own pack)
 
@@ -357,27 +346,31 @@ or not at all — so this runs automatically as part of the build.
 ## Project layout
 
 ```
-BP/                        Behavior Pack — stats, recipes, rules
-  manifest.json             pack identity (don't hand-edit the UUIDs)
-  items/obsidian_sword.json item definition (damage, durability, etc.)
-  recipes/obsidian_sword.json crafting recipe
-  texts/en_US.lang           display name
-RP/                        Resource Pack — how it looks
-  manifest.json
-  textures/items/obsidian_sword.png  16x16 icon (placeholder pixel art —
-                                       redrawing this is a fun kid project)
-  textures/item_texture.json         maps the item id to its texture file
-  texts/en_US.lang
-chopper/                   SEPARATE mod — the helicopter (own BP/ + RP/ + UUIDs)
-ruby/                      SEPARATE mod — ruby ore/gem/blocks (own BP/ + RP/ + UUIDs)
-scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
-scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
-scripts/build_ruby.sh      packages ruby/ into dist/Ruby.mcaddon
-dist/                      the built .mcaddon files — these ARE committed, so
-                             the iPad can download one without the Mac. Re-run
-                             a build script after any change and commit the
-                             .mcaddon it produces.
-scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
-scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
-scripts/build_car.sh       packages car/ into dist/MonsterTruck.mcaddon
+BP/  RP/            Family Mods — obsidian sword, RPG, emerald sword + armour
+chopper/            SEPARATE mod — the helicopter   (own BP/ + RP/ + UUIDs)
+car/                SEPARATE mod — the monster truck
+ruby/               SEPARATE mod — ruby ore, gems, blocks, tools
+squirrel/           SEPARATE mod — the transforming squirrel
+unfun/              SEPARATE mod — everything nerfed
+lego/               NOT a Minecraft mod — a buildable LEGO squirrel, with a
+                      rendered instruction booklet and parts list
+
+dist/               the built .mcaddon files. These ARE committed, so the iPad
+                      can download one straight from GitHub without the
+                      computer. Re-run a build script after any change and
+                      commit the .mcaddon it produces.
+
+scripts/build_all.sh       every mod, into dist/
+scripts/build_mcpack.sh    BP/ + RP/        -> dist/FamilyMods.mcaddon
+scripts/build_chopper.sh   chopper/         -> dist/Chopper.mcaddon
+scripts/build_car.sh       car/             -> dist/MonsterTruck.mcaddon
+scripts/build_ruby.sh      ruby/            -> dist/Ruby.mcaddon
+scripts/build_squirrel.sh  squirrel/        -> dist/Squirrel.mcaddon
+scripts/build_unfun.sh     unfun/           -> dist/Unfun.mcaddon
+
+tools/check_packs.py       every mod still has its own UUIDs (run by build_all)
+tools/check_squirrel.py    the squirrel pack's files all agree with each other
+tools/squirrel_model.py    generates the squirrel models, textures and previewer
+tools/squirrel_viewer.html open in a browser to look at the squirrel models
+car/tools/render_preview.py draws the monster truck without loading Minecraft
 ```
