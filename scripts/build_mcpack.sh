@@ -12,6 +12,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 mkdir -p dist
+# only clear THIS mod's files — dist/ also holds every other mod
 rm -f dist/FamilyMods_BP.mcpack dist/FamilyMods_RP.mcpack dist/FamilyMods.mcaddon
 
 (cd BP && zip -r -q ../dist/FamilyMods_BP.mcpack .)

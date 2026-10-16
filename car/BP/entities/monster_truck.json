@@ -1,0 +1,72 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "vehicles:monster_truck",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": ["monster_truck", "vehicle"]
+      },
+      "minecraft:health": {
+        "value": 80,
+        "max": 80
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/monster_truck.json"
+      },
+      "minecraft:collision_box": {
+        "width": 2.6,
+        "height": 3.0
+      },
+      "minecraft:physics": {
+        "has_gravity": true,
+        "has_collision": true
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:persistent": {},
+      "minecraft:movement": {
+        "value": 0.36
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true
+      },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:behavior.controlled_by_player": {
+        "priority": 0,
+        "mount_speed_multiplier": 1.0
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": false
+          }
+        ]
+      },
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "Drive Monster Truck",
+        "pull_in_entities": false,
+        "seats": [
+          {
+            "position": [0.0, 2.2, -0.1],
+            "lock_rider_rotation": 0
+          }
+        ]
+      }
+    }
+  }
+}

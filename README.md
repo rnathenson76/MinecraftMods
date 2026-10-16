@@ -21,9 +21,15 @@ packs.
 
 ## How to get it onto the iPad and into the world
 
-1. Run the build script above (on the Mac).
-2. Get `dist/FamilyMods.mcaddon` onto the iPad — AirDrop is easiest, or
-   iCloud Drive / Messages / email also work.
+1. Get the `.mcaddon` file. Either way works:
+   - **From the Mac:** run the build script above, then AirDrop
+     `dist/FamilyMods.mcaddon` to the iPad (iCloud Drive / Messages / email
+     work too).
+   - **Straight from GitHub, no Mac needed:** the built `.mcaddon` files are
+     committed in `dist/`, so on the iPad you can open the repo in Safari,
+     tap the file, and download it. (If the repo is private, sign in to
+     GitHub on the iPad first.)
+2. Whichever way you got it, the file lands in the iPad's Files app.
 3. On the iPad, tap the `.mcaddon` file. Minecraft should open and say it
    imported an add-on (it installs both packs automatically).
 4. In Minecraft: **Play → create or edit a world → Behavior Packs / Resource
@@ -196,6 +202,56 @@ tool for the drop, so this is the simple, always-works version.
 
 Files: `ruby/BP` (blocks, items, recipes, loot tables, ore generation) and
 `ruby/RP` (block + item textures, the two texture atlases, names).
+## Monster Truck — another SEPARATE mod (its own pack)
+
+The monster truck lives in its own pack under `car/` with its own UUIDs, so it
+installs and updates independently of Family Mods (sword + RPG) and the Chopper,
+and can't disturb either of them.
+
+- Build:  `./scripts/build_car.sh`  →  `dist/MonsterTruck.mcaddon`
+- Entity: `vehicles:monster_truck`; spawn egg reads **"Monster Truck"**
+  (black with orange spots)
+- Item:   `vehicles:monster_truck_kit` — a craftable "Monster Truck" you tap on
+  the ground to place the truck, like a spawn egg
+
+**Driving it:**
+
+- Tap the truck to get in, then steer with the normal move joystick — it's
+  faster than the fastest horse.
+- **HOLD jump = NITRO** — a burst of speed with flames out the exhaust stacks.
+- **TAP jump = HONK** the horn. (Sneak can't be the horn: on Bedrock the sneak
+  button is what gets you *out* of a vehicle.)
+- Drive into a 1-block step and it **climbs** it instead of stopping.
+- It takes no fall damage, can't be shoved around, and drops iron / redstone /
+  diamonds if something destroys it.
+
+**Crafting it** (crafting table):
+
+```
+iron   iron    iron
+wool   redstone  wool      wool = black wool (the tyres)
+wool   iron blk  wool      redstone = a redstone BLOCK (the engine)
+```
+
+**Seeing a change without loading Minecraft:**
+
+```
+python3 car/tools/render_preview.py    ->  dist/monster_truck_preview.png
+```
+
+That draws the truck from the real model and texture files (three angles). It's
+handy after editing the shape — and it catches a mistake that's easy to make:
+if two parts share an exact face plane, the preview shows a flickery
+checkerboard there, and that same overlap flickers in the game too.
+
+**The numbers you'd want to change** are all near the top of one file each:
+
+- speed → `"minecraft:movement"` in `car/BP/entities/monster_truck.json`
+- nitro strength, horn pitch, how high it climbs → the `---- Feel ----` block at
+  the top of `car/BP/scripts/main.js`
+- paint colours and the flame decals → `car/tools/make_textures.py` (re-run
+  `./scripts/build_car.sh` and it redraws them for you)
+- the shape itself → `car/RP/models/entity/monster_truck.geo.json`
 
 ## Project layout
 
@@ -216,4 +272,11 @@ ruby/                      SEPARATE mod — ruby ore/gem/blocks (own BP/ + RP/ +
 scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
 scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
 scripts/build_ruby.sh      packages ruby/ into dist/Ruby.mcaddon
+dist/                      the built .mcaddon files — these ARE committed, so
+                             the iPad can download one without the Mac. Re-run
+                             a build script after any change and commit the
+                             .mcaddon it produces.
+scripts/build_mcpack.sh    packages BP/ + RP/ into dist/FamilyMods.mcaddon
+scripts/build_chopper.sh   packages chopper/ into dist/Chopper.mcaddon
+scripts/build_car.sh       packages car/ into dist/MonsterTruck.mcaddon
 ```
