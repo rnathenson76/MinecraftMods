@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Squirrel",
+    "description": "A tameable squirrel that grows 15x and throws nuts — Resource Pack",
+    "uuid": "c4394c53-dd3c-4664-9a19-8280972c1178",
+    "version": [1, 0, 1],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "54ee68b0-6205-4faf-a349-7363f340e61c",
+      "version": [1, 0, 1]
+    }
+  ]
+}

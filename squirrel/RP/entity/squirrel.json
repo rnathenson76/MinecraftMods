@@ -1,0 +1,35 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "pets:squirrel",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "scrawny": "textures/entity/squirrel_scrawny",
+        "buff": "textures/entity/squirrel_buff"
+      },
+      "geometry": {
+        "scrawny": "geometry.squirrel_scrawny",
+        "buff": "geometry.squirrel_buff"
+      },
+      "scripts": {
+        "animate": [
+          "transform_ctrl"
+        ]
+      },
+      "animations": {
+        "transform": "animation.squirrel.transform",
+        "transform_ctrl": "controller.animation.squirrel.transform"
+      },
+      "render_controllers": [
+        "controller.render.squirrel"
+      ],
+      "spawn_egg": {
+        "base_color": "#8B5A2B",
+        "overlay_color": "#E8D9B5"
+      }
+    }
+  }
+}

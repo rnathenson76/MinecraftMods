@@ -1,0 +1,14 @@
+{
+  "format_version": "1.10.0",
+  "animations": {
+    "animation.squirrel.transform": {
+      "loop": false,
+      "animation_length": 0.7,
+      "sound_effects": {
+        "0.0":  { "effect": "squirrel.squeak1" },
+        "0.22": { "effect": "squirrel.squeak2" },
+        "0.44": { "effect": "squirrel.squeak3" }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.squirrel": {
+      "arrays": {
+        "geometries": {
+          "Array.forms": ["Geometry.scrawny", "Geometry.buff"]
+        },
+        "textures": {
+          "Array.skins": ["Texture.scrawny", "Texture.buff"]
+        }
+      },
+      "geometry": "Array.forms[query.variant]",
+      "materials": [{ "*": "Material.default" }],
+      "textures": ["Array.skins[query.variant]"]
+    }
+  }
+}
