@@ -9,6 +9,16 @@ Pack (`RP/`, the textures/names), zipped up and imported into Minecraft.
 - **Obsidian Sword** (`familymods:obsidian_sword`) — hits as hard as
   Sharpness 20, obsidian-purple blade, huge durability. Craft it with
   2 obsidian + 1 stick, same shape as a normal sword recipe.
+- **Emerald Sword** (`familymods:emerald_sword`) — Adam's magic sword.
+  Hits living things for **20 hearts** (`minecraft:damage` = 40; 2 damage =
+  1 heart). The magic trick: the moment you **hold** it, whatever armour you're
+  wearing (and your off-hand item) is set aside and a full set of **Emerald
+  Armour + an Emerald Shield** appears on you — and the emerald gear *and the
+  sword itself* get every enchantment they can take, each at max level. Put the
+  sword away and the emerald gear vanishes and your **exact old armour goes
+  right back on**. Your old gear is remembered on you (it survives a relog) and
+  only ever moved back — never copied — so nothing duplicates. Craft the sword
+  with 2 emerald + 1 stick.
 
 ## How to build it into something Minecraft can open
 
@@ -76,6 +86,18 @@ changes the item format again and items stop appearing, that version string
 3. Ideas for later: a custom mob/pet, a small JavaScript script for
    something interactive. (The "custom block" idea grew into the Ruby mod,
    which lives in its own pack — see below.)
+3. ✅ Emerald Sword — 20-heart hit, plus a Script-API "hold it and your armour
+   turns to (fully enchanted) emerald, put it away and your own armour comes
+   back" swap. Damage is one number in `BP/items/emerald_sword.json`
+   (`minecraft:damage`). The swap + enchant + restore logic is all in
+   `BP/scripts/main.js`. The armour's base strength is the `protection` number
+   in each `BP/items/emerald_*.json`. The green look is drawn by
+   `scripts/gen_emerald_textures.py` (re-run it, then rebuild, to change colours
+   or shapes).
+   - **Heads-up on the shield:** Minecraft only lets the *real* vanilla shield
+     do the block-the-hit crouch. Our Emerald Shield is cosmetic — it sits in
+     the off-hand and looks the part, but doesn't add the blocking move.
+4. Ideas for later: a custom block, a custom mob/pet, more interactive scripts.
 
 ## Chopper — a SEPARATE mod (its own pack)
 

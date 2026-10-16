@@ -7,6 +7,24 @@
     },
     "rpg": {
       "textures": "textures/items/rpg"
+    },
+    "emerald_sword": {
+      "textures": "textures/items/emerald_sword"
+    },
+    "emerald_helmet": {
+      "textures": "textures/items/emerald_helmet"
+    },
+    "emerald_chestplate": {
+      "textures": "textures/items/emerald_chestplate"
+    },
+    "emerald_leggings": {
+      "textures": "textures/items/emerald_leggings"
+    },
+    "emerald_boots": {
+      "textures": "textures/items/emerald_boots"
+    },
+    "emerald_shield": {
+      "textures": "textures/items/emerald_shield"
     }
   }
 }

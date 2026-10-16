@@ -1,0 +1,27 @@
+{
+  "format_version": "1.26.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "familymods:emerald_leggings",
+      "menu_category": {
+        "category": "equipment",
+        "group": "minecraft:itemGroup.name.leggings"
+      }
+    },
+    "components": {
+      "minecraft:icon": "emerald_leggings",
+      "minecraft:display_name": {
+        "value": "Emerald Leggings"
+      },
+      "minecraft:max_stack_size": 1,
+      "minecraft:wearable": {
+        "slot": "slot.armor.legs",
+        "protection": 8
+      },
+      "minecraft:enchantable": {
+        "value": 15,
+        "slot": "armor_legs"
+      }
+    }
+  }
+}
