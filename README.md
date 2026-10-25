@@ -17,6 +17,7 @@ update, and uninstall independently — adding one can never disturb another.
 | **Ruby** | Ruby ore, gems, blocks, sword and pickaxe | `dist/Ruby.mcaddon` |
 | **Squirrel** | Tameable squirrel that grows 15x and throws nuts | `dist/Squirrel.mcaddon` |
 | **Unfun** | Everything nerfed — grind for every stat | `dist/Unfun.mcaddon` |
+| **Carrier** | Water Blaster (aircraft carrier coming next) | `dist/Carrier.mcaddon` |
 
 `lego/` isn't a Minecraft mod — it's a buildable LEGO squirrel with a rendered
 instruction booklet and a parts list.
@@ -374,3 +375,36 @@ tools/squirrel_model.py    generates the squirrel models, textures and previewer
 tools/squirrel_viewer.html open in a browser to look at the squirrel models
 car/tools/render_preview.py draws the monster truck without loading Minecraft
 ```
+
+## Carrier — a SEPARATE mod (its own pack)
+
+Adam's aircraft carrier: a huge ship you place on the ocean and walk all over,
+with water guns and a petting zoo. It's being built in phases, and each one
+gets tested on the iPad before the next starts. Its ids use the `carrier:`
+namespace.
+
+- Build:  `./scripts/build_carrier.sh`  →  `dist/Carrier.mcaddon`
+- **Phase 1 (current): the Water Blaster** (`carrier:water_blaster`)
+- Next: the ship + Carrier Kit, deck water cannons, then the petting zoo.
+
+**Water Blaster.** Use it to fire water shots. They hurt mobs (2 hearts),
+knock them back and splash. They put out burning mobs and fire blocks where
+they land, and blazes, endermen and snow golems take extra damage. The
+durability bar is the water tank: each shot uses a little, and when it runs
+dry you look at water close by and use the blaster to refill it.
+
+It's in the creative inventory under Equipment, or with cheats on:
+
+```
+/give @s carrier:water_blaster
+```
+
+**Knobs you can turn**
+
+- How hard a shot hits — `"damage"` in `carrier/BP/entities/water_shot.json`
+- How many shots a full tank holds — `"max_durability"` in
+  `carrier/BP/items/water_blaster.json`
+- Shot speed, spray, fire rate, refill reach and the water-hater bonus — the
+  `Feel` block at the top of `carrier/BP/scripts/main.js`
+- Colours of the icon, the water shot and the pack icon —
+  `carrier/tools/make_textures.py`

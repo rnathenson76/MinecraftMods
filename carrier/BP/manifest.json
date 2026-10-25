@@ -1,0 +1,34 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Carrier 1.0.0",
+    "description": "Aircraft carrier, water blasters and a petting zoo — Behavior Pack",
+    "uuid": "6899e72a-91c0-482c-8476-af49487c1bd9",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "3b3a7e85-07d2-40f6-a8d1-ddc6106c3ef6",
+      "version": [1, 0, 0]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "9ac1a259-92f7-4361-9262-3269a4e449f4",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "e04f9ba7-33bb-446b-b3bd-555b33c4e7c4",
+      "version": [1, 0, 0]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.0.0"
+    }
+  ]
+}
