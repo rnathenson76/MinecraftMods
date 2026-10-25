@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Carrier 1.0.0",
+    "description": "Aircraft carrier, water blasters and a petting zoo — Resource Pack",
+    "uuid": "e04f9ba7-33bb-446b-b3bd-555b33c4e7c4",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "1cb3527b-6a58-4b2b-8c2e-ed7c7c0b3f23",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "6899e72a-91c0-482c-8476-af49487c1bd9",
+      "version": [1, 0, 0]
+    }
+  ]
+}
